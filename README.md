@@ -45,4 +45,4 @@ Um jogo Space Invaders em 3D desenvolvido com Three.js, apresentando bonequinhos
 
 ## Desenvolvido por
 
-Sidney Goldbach
+Sidney Goldbach# invaders3d
