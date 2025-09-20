@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Invaders 3D - Bonequinhos Coloridos</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #000428, #004e92);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+        
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 24px;
+            z-index: 100;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        #instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-align: center;
+            z-index: 100;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            font-size: 32px;
+            z-index: 200;
+            display: none;
+            background: rgba(0,0,0,0.8);
+            padding: 40px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="ui">
+            <div>Pontuação: <span id="score">0</span></div>
+            <div>Vidas: <span id="lives">3</span></div>
+            <div>Estado: <span id="playerState">Verde (0/3)</span></div>
+        </div>
+        
+        <div id="instructions">
+            <div>Use as setas ← → para mover | ESPAÇO para atirar</div>
+            <div>🛸 Discos voadores: +10 pontos | ✈️ Aviões e 🪂 Paraquedistas: -5 pontos</div>
+            <div>💥 Discos atiram! 3 acertos = muda cor (Verde→Azul→Vermelho→perde vida)</div>
+        </div>
+        
+        <div id="gameOver">
+            <h2>Fim de Jogo!</h2>
+            <p>Pontuação Final: <span id="finalScore">0</span></p>
+            <button onclick="restartGame()">Jogar Novamente</button>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
