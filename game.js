@@ -345,6 +345,8 @@ function enemyShoot(enemy) {
     bullet.userData = { speed: 0.15, type: 'enemy' };
     scene.add(bullet);
     enemyBullets.push(bullet);
+    console.log(`Enemy shot! Bullet created at: ${bullet.position.x.toFixed(2)}, ${bullet.position.y.toFixed(2)}, ${bullet.position.z.toFixed(2)}`);
+    console.log(`Total enemy bullets: ${enemyBullets.length}`);
 }
 
 // Atualizar cor do jogador
@@ -492,13 +494,18 @@ function checkCollisions() {
         }
     }
     
-    // Colisões entre projéteis inimigos e jogador
+    // Colisões entre projéteis inimigos e o jogador
     for (let i = enemyBullets.length - 1; i >= 0; i--) {
         const bullet = enemyBullets[i];
         const distance = bullet.position.distanceTo(player.position);
         
-        if (distance < 1.2) {
-            // Criar explosão pequena no jogador
+        // Debug: adicionar log para verificar colisões
+        console.log(`Enemy bullet at: ${bullet.position.x.toFixed(2)}, ${bullet.position.y.toFixed(2)}, ${bullet.position.z.toFixed(2)}`);
+        console.log(`Player at: ${player.position.x.toFixed(2)}, ${player.position.y.toFixed(2)}, ${player.position.z.toFixed(2)}`);
+        console.log(`Distance: ${distance.toFixed(2)}`);
+        
+        if (distance < 2) { // Aumentando a distância de colisão
+            // Criar explosão na posição do jogador
             createExplosion(player.position);
             
             // Remover projétil inimigo
@@ -507,6 +514,7 @@ function checkCollisions() {
             
             // Jogador foi atingido
             playerHit();
+            console.log('Player hit by enemy bullet!');
             break;
         }
     }
@@ -516,11 +524,6 @@ function checkCollisions() {
 function updateUI() {
     document.getElementById('score').textContent = score;
     document.getElementById('lives').textContent = lives;
-    
-    // Atualizar estado do jogador
-    const colorNames = ['Verde', 'Azul', 'Vermelho'];
-    const currentColor = colorNames[currentColorIndex];
-    document.getElementById('playerState').textContent = `${currentColor} (${playerHits}/3)`;
 }
 
 // Fim de jogo
@@ -539,19 +542,13 @@ function restartGame() {
     airplanes.forEach(airplane => scene.remove(airplane));
     parachutists.forEach(parachutist => scene.remove(parachutist));
     
-    // Limpar explosões
-    explosions.forEach(explosion => {
-        explosion.forEach(particle => scene.remove(particle));
-    });
-    
     enemies = [];
     bullets = [];
     enemyBullets = [];
     airplanes = [];
     parachutists = [];
-    explosions = [];
     
-    // Resetar variáveis do jogador
+    // Resetar variáveis
     score = 0;
     lives = 3;
     playerHits = 0;
@@ -595,17 +592,29 @@ function animate() {
         }
     }
     
+    // Mover projéteis inimigos
+    for (let i = enemyBullets.length - 1; i >= 0; i--) {
+        const bullet = enemyBullets[i];
+        bullet.position.z += bullet.userData.speed;
+        
+        // Remover projéteis inimigos que saíram da tela
+        if (bullet.position.z > GAME_DEPTH / 2) {
+            scene.remove(bullet);
+            enemyBullets.splice(i, 1);
+        }
+    }
+    
     // Mover inimigos (UFOs)
     for (let i = enemies.length - 1; i >= 0; i--) {
         const enemy = enemies[i];
         enemy.position.z += enemy.userData.speed;
         enemy.rotation.y += 0.02;
         
-        // Inimigos atiram ocasionalmente
-        const now = Date.now();
-        if (now - enemy.userData.lastShot > enemy.userData.shootCooldown && Math.random() < 0.005) {
+        // Lógica de tiro dos inimigos
+        const currentTime = Date.now();
+        if (currentTime - enemy.userData.lastShot > enemy.userData.shootCooldown) {
             enemyShoot(enemy);
-            enemy.userData.lastShot = now;
+            enemy.userData.lastShot = currentTime;
         }
         
         // Remover inimigos que saíram da tela
@@ -648,18 +657,6 @@ function animate() {
         if (parachutist.position.y < -2) {
             scene.remove(parachutist);
             parachutists.splice(i, 1);
-        }
-    }
-    
-    // Mover projéteis inimigos
-    for (let i = enemyBullets.length - 1; i >= 0; i--) {
-        const bullet = enemyBullets[i];
-        bullet.position.z += bullet.userData.speed;
-        
-        // Remover projéteis que saíram da tela
-        if (bullet.position.z > GAME_DEPTH / 2) {
-            scene.remove(bullet);
-            enemyBullets.splice(i, 1);
         }
     }
     
