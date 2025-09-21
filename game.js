@@ -333,6 +333,11 @@ function shoot() {
     bullet.userData = { speed: 0.3, type: 'player' };
     scene.add(bullet);
     bullets.push(bullet);
+    
+    // Efeito sonoro do tiro do jogador
+    if (typeof audioSystem !== 'undefined') {
+        audioSystem.playPlayerShoot();
+    }
 }
 
 // Atirar (inimigo)
@@ -347,6 +352,11 @@ function enemyShoot(enemy) {
     enemyBullets.push(bullet);
     console.log(`Enemy shot! Bullet created at: ${bullet.position.x.toFixed(2)}, ${bullet.position.y.toFixed(2)}, ${bullet.position.z.toFixed(2)}`);
     console.log(`Total enemy bullets: ${enemyBullets.length}`);
+    
+    // Efeito sonoro do tiro do inimigo
+    if (typeof audioSystem !== 'undefined') {
+        audioSystem.playEnemyShoot();
+    }
 }
 
 // Atualizar cor do jogador
@@ -361,6 +371,11 @@ function updatePlayerColor() {
 // Jogador foi atingido
 function playerHit() {
     playerHits++;
+    
+    // Efeito sonoro quando jogador é atingido
+    if (typeof audioSystem !== 'undefined') {
+        audioSystem.playPlayerHit();
+    }
     
     if (playerHits >= 3) {
         // Perder uma vida e resetar cor
@@ -435,6 +450,11 @@ function checkCollisions() {
             if (distance < 1.5) {
                 // Criar explosão
                 createExplosion(enemy.position);
+                
+                // Efeito sonoro quando inimigo é atingido
+                if (typeof audioSystem !== 'undefined') {
+                    audioSystem.playEnemyHit();
+                }
                 
                 // Remover projétil e inimigo
                 scene.remove(bullet);
