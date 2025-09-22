@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, System.Types, System.Math,
-  Vcl.Graphics, System.Generics.Collections;
+  Vcl.Graphics, System.Generics.Collections, Winapi.Windows;
 
 type
   // Estruturas básicas
@@ -367,7 +367,7 @@ end;
 
 constructor TExplosion.Create(APosition: TVector3D);
 begin
-  inherited Create(APosition, 2.0, clOrange);
+  inherited Create(APosition, 2.0, $0080FF); // Cor laranja em RGB
   FLifeTime := 0;
   FMaxLifeTime := 1.0; // 1 segundo
   FParticles := 10;
