@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, System.Types, System.Math,
-  Vcl.Graphics, System.Generics.Collections, GameObjects, Renderer3D, AudioSystem;
+  Vcl.Graphics, System.Generics.Collections, Winapi.Windows, GameObjects, Renderer3D, AudioSystem;
 
 type
   // Eventos do jogo
@@ -237,12 +237,15 @@ begin
   MoveSpeed := 10.0; // Unidades por segundo
   
   // Movimento do jogador
-  FPlayer.Velocity := TVector3D.Create(0, 0, 0);
+  var PlayerVelocity: TVector3D;
+  PlayerVelocity := TVector3D.Create(0, 0, 0);
   
   if FKeys.Left then
-    FPlayer.Velocity.X := -MoveSpeed;
+    PlayerVelocity.X := -MoveSpeed;
   if FKeys.Right then
-    FPlayer.Velocity.X := MoveSpeed;
+    PlayerVelocity.X := MoveSpeed;
+    
+  FPlayer.Velocity := PlayerVelocity;
   
   // Tiro do jogador
   if FKeys.Space and FPlayer.CanShoot then
