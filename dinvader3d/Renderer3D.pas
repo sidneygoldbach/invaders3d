@@ -10,7 +10,7 @@ type
   TRenderer3D = class
   private
     FCanvas: TCanvas;
-    FPanel: TPanel;
+    FPaintBox: TPaintBox;
     FWidth, FHeight: Integer;
     FCameraZ: Single;
     FProjectionMatrix: array[0..3, 0..3] of Single;
@@ -23,7 +23,7 @@ type
     procedure DrawStarField(Stars: TGameObjectList<TStar>);
     procedure DrawExplosion(Explosion: TExplosion);
   public
-    constructor Create(APanel: TPanel);
+    constructor Create(APaintBox: TPaintBox);
     destructor Destroy; override;
     
     procedure Resize(AWidth, AHeight: Integer);
@@ -45,13 +45,13 @@ implementation
 
 { TRenderer3D }
 
-constructor TRenderer3D.Create(APanel: TPanel);
+constructor TRenderer3D.Create(APaintBox: TPaintBox);
 begin
   inherited Create;
-  FPanel := APanel;
-  FCanvas := FPanel.Canvas;
-  FWidth := FPanel.Width;
-  FHeight := FPanel.Height;
+  FPaintBox := APaintBox;
+  FCanvas := FPaintBox.Canvas;
+  FWidth := FPaintBox.Width;
+  FHeight := FPaintBox.Height;
   FCameraZ := 15;
   InitializeProjection;
 end;

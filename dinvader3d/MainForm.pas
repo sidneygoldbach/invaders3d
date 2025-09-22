@@ -9,7 +9,7 @@ uses
 
 type
   TfrmMain = class(TForm)
-    pnlGame: TPanel;
+    pbGame: TPaintBox;
     pnlUI: TPanel;
     lblScore: TLabel;
     lblLives: TLabel;
@@ -27,7 +27,7 @@ type
     procedure btnRestartClick(Sender: TObject);
     procedure tmrGameTimer(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure pnlGamePaint(Sender: TObject);
+    procedure pbGamePaint(Sender: TObject);
   private
     FGameEngine: TGameEngine;
     FRenderer: TRenderer3D;
@@ -57,9 +57,9 @@ begin
   Self.DoubleBuffered := True;
   
   // Configurar painel do jogo
-  pnlGame.Align := alClient;
-  pnlGame.Color := clBlack;
-  pnlGame.OnPaint := pnlGamePaint;
+  pbGame.Align := alClient;
+  pbGame.Color := clBlack;
+  pbGame.OnPaint := pbGamePaint;
   
   // Configurar painel da UI
   pnlUI.Align := alTop;
@@ -111,7 +111,7 @@ end;
 procedure TfrmMain.InitializeGame;
 begin
   // Criar sistemas do jogo
-  FRenderer := TRenderer3D.Create(pnlGame);
+  FRenderer := TRenderer3D.Create(pbGame);
   FAudioSystem := TAudioSystem.Create;
   FGameEngine := TGameEngine.Create(FRenderer, FAudioSystem);
   
@@ -178,17 +178,17 @@ begin
   if Assigned(FGameEngine) then
   begin
     FGameEngine.Update;
-    pnlGame.Invalidate; // Força repaint
+    pbGame.Invalidate; // Força repaint
   end;
 end;
 
 procedure TfrmMain.FormResize(Sender: TObject);
 begin
   if Assigned(FRenderer) then
-    FRenderer.Resize(pnlGame.Width, pnlGame.Height);
+    FRenderer.Resize(pbGame.Width, pbGame.Height);
 end;
 
-procedure TfrmMain.pnlGamePaint(Sender: TObject);
+procedure TfrmMain.pbGamePaint(Sender: TObject);
 begin
   if Assigned(FRenderer) and Assigned(FGameEngine) then
   begin

@@ -78,16 +78,14 @@ object frmMain: TfrmMain
       OnClick = btnStartClick
     end
   end
-  object pnlGame: TPanel
+  object pbGame: TPaintBox
     Left = 0
     Top = 60
     Width = 800
     Height = 540
     Align = alClient
     Color = clBlack
-    ParentBackground = False
-    TabOrder = 1
-    OnPaint = pnlGamePaint
+    OnPaint = pbGamePaint
   end
   object pnlGameOver: TPanel
     Left = 200
