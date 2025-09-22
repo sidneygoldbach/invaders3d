@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, System.Types, System.Math,
-  Vcl.Graphics, Vcl.Controls, Vcl.ExtCtrls, GameObjects;
+  System.Generics.Collections, Vcl.Graphics, Vcl.Controls, Vcl.ExtCtrls, GameObjects;
 
 type
   TRenderer3D = class
@@ -240,6 +240,29 @@ begin
   FCanvas.Brush.Style := bsClear;
   FCanvas.Ellipse(Center.X - Radius div 3, Center.Y - Radius div 3,
                   Center.X + Radius div 3, Center.Y + Radius div 3);
+end;
+
+procedure TRenderer3D.DrawStarField(Stars: TGameObjectList<TStar>);
+var
+  i: Integer;
+  Center: TPoint;
+  Star: TStar;
+begin
+  FCanvas.Pen.Color := clWhite;
+  FCanvas.Pen.Width := 1;
+  FCanvas.Brush.Color := clWhite;
+  FCanvas.Brush.Style := bsSolid;
+  
+  for i := 0 to Stars.Count - 1 do
+  begin
+    Star := Stars[i];
+    Center := ProjectPoint(Star.Position);
+    if (Center.X >= 0) and (Center.X < FWidth) and 
+       (Center.Y >= 0) and (Center.Y < FHeight) then
+    begin
+      FCanvas.Ellipse(Center.X - 1, Center.Y - 1, Center.X + 1, Center.Y + 1);
+    end;
+  end;
 end;
 
 procedure TRenderer3D.Resize(AWidth, AHeight: Integer);
