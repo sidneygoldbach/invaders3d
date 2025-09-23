@@ -394,20 +394,13 @@ end;
 constructor TStar.Create(APosition: TVector3D);
 begin
   inherited Create(APosition, 0.1, clWhite);
-  FVelocity := TVector3D.Create(0, 0, 2 + Random * 3); // Velocidade variável
+  FVelocity := TVector3D.Create(0, 0, 0); // Estrelas estáticas
 end;
 
 procedure TStar.Update(DeltaTime: Single);
 begin
-  inherited Update(DeltaTime);
-  
-  // Reposicionar estrela quando sair da tela
-  if FPosition.Z > 20 then
-  begin
-    FPosition.Z := -20;
-    FPosition.X := -15 + Random * 30;
-    FPosition.Y := -10 + Random * 20;
-  end;
+  // Estrelas ficam estáticas - não chamamos inherited Update
+  // e não reposicionamos as estrelas
 end;
 
 { TGameObjectList<T> }

@@ -132,17 +132,16 @@ end;
 
 procedure TGameEngine.InitializeStarField;
 var
-  i: Integer;
+  I: Integer;
   Star: TStar;
   Position: TVector3D;
 begin
-  // Criar 100 estrelas aleatórias
-  for i := 0 to 99 do
+  for I := 0 to 199 do // 200 estrelas como no JavaScript
   begin
     Position := TVector3D.Create(
-      -15 + Random * 30,  // X: -15 a 15
-      -10 + Random * 20,  // Y: -10 a 10
-      -20 + Random * 40   // Z: -20 a 20
+      (Random - 0.5) * 100,  // X: -50 a 50 (área maior)
+      (Random - 0.5) * 50,   // Y: -25 a 25 (área maior)
+      (Random - 0.5) * 50    // Z: -25 a 25 (área maior)
     );
     Star := TStar.Create(Position);
     FStars.Add(Star);
