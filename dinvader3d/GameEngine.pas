@@ -110,7 +110,7 @@ begin
   FLastUpdate := GetTickCount;
   
   // Criar jogador
-  FPlayer := TPlayer.Create(TVector3D.Create(0, -2, -5));
+  FPlayer := TPlayer.Create(TVector3D.Create(0, -2, 5));
   
   // Inicializar campo de estrelas
   InitializeStarField;
@@ -393,6 +393,27 @@ begin
       
       // Remover projétil
       FEnemyBullets.Delete(i);
+    end;
+  end;
+  
+  // Colisões: Balas do jogador vs Balas inimigas
+  for i := FBullets.Count - 1 downto 0 do
+  begin
+    for j := FEnemyBullets.Count - 1 downto 0 do
+    begin
+      if FBullets[i].CheckCollision(FEnemyBullets[j]) then
+      begin
+        // Criar explosão na posição da colisão
+        Explosion := TExplosion.Create(FBullets[i].Position);
+        FExplosions.Add(Explosion);
+        
+        // Remover ambas as balas
+        FBullets.Delete(i);
+        FEnemyBullets.Delete(j);
+        
+        // Sair do loop interno
+        Break;
+      end;
     end;
   end;
   
