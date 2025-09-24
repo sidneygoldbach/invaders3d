@@ -261,7 +261,14 @@ begin
   if AIsPlayerBullet then
     FVelocity := TVector3D.Create(0, 0, -15)  // Para frente
   else
-    FVelocity := TVector3D.Create(0, 0, 10);  // Para trás
+  begin
+    // Balas inimigas vão em direção ao jogador (posição 0, -2, -5)
+    FVelocity := TVector3D.Create(
+      -APosition.X * 0.5,  // Direção X para o centro
+      (-2 - APosition.Y) * 0.5,  // Direção Y para o jogador
+      (-5 - APosition.Z) * 0.5   // Direção Z para o jogador
+    );
+  end;
 end;
 
 procedure TBullet.Update(DeltaTime: Single);
