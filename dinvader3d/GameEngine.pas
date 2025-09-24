@@ -110,7 +110,7 @@ begin
   FLastUpdate := GetTickCount;
   
   // Criar jogador
-  FPlayer := TPlayer.Create(TVector3D.Create(0, 0, 10));
+  FPlayer := TPlayer.Create(TVector3D.Create(0, 0, -5));
   
   // Inicializar campo de estrelas
   InitializeStarField;
@@ -425,15 +425,14 @@ end;
 procedure TGameEngine.SpawnEnemy;
 var
   Enemy: TEnemy;
-  Position: TVector3D;
+  X, Y, Z: Single;
 begin
-  Position := TVector3D.Create(
-    -8 + Random * 16,  // X: -8 a 8
-    2 + Random * 3,    // Y: 2 a 5
-    -15 + Random * 5   // Z: -15 a -10
-  );
+  // Posições aleatórias na frente da câmera
+  X := Random * 16 - 8;  // -8 a 8
+  Y := Random * 6 - 3;   // -3 a 3
+  Z := Random * 10 - 20; // -20 a -10 (na frente da câmera)
   
-  Enemy := TEnemy.Create(Position);
+  Enemy := TEnemy.Create(TVector3D.Create(X, Y, Z));
   FEnemies.Add(Enemy);
 end;
 
