@@ -3,7 +3,7 @@ unit EffectsManager;
 interface
 
 uses
-  Windows, Graphics, Classes, SysUtils, Math;
+  Winapi.Windows, Vcl.Graphics, System.Classes, System.SysUtils, System.Math;
 
 type
   // Tipos de efeitos especiais
