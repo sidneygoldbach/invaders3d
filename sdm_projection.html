@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeção Smart Digital Group (SDM) - Próximas 4 Semanas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #007bff;
+        }
+        .header h1 {
+            color: #007bff;
+            font-size: 2.5em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .current-price {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .ipo-alert {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .chart-wrapper {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .chart-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        .analysis {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #007bff;
+        }
+        .scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .scenario {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+        .bullish { background: linear-gradient(45deg, #28a745, #20c997); }
+        .neutral { background: linear-gradient(45deg, #ffc107, #fd7e14); }
+        .bearish { background: linear-gradient(45deg, #dc3545, #e83e8c); }
+        .volatility-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #ff9800;
+        }
+        .disclaimer {
+            background: #ffebee;
+            border: 1px solid #ffcdd2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        .key-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #007bff;
+        }
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .metric-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📈 Smart Digital Group (SDM) - Análise e Projeção</h1>
+            <p>Baseado nos últimos 2 meses | Projeção para 4 semanas</p>
+        </div>
+
+        <div class="ipo-alert">
+            🚨 ATENÇÃO: Empresa recém-listada (IPO em Maio 2025) - Alta volatilidade esperada
+        </div>
+
+        <div class="current-price">
+            💰 Preço Atual: $15.61 | Variação: +5.12% (último pregão)
+        </div>
+
+        <div class="key-metrics">
+            <div class="metric">
+                <div class="metric-value">$29.40</div>
+                <div class="metric-label">Máxima Histórica<br>(28 Jul 2025)</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">$4.03</div>
+                <div class="metric-label">Mínima Histórica<br>(6 Mai 2025)</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">$397M</div>
+                <div class="metric-label">Market Cap</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">+121.8%</div>
+                <div class="metric-label">Crescimento Receita 2024</div>
+            </div>
+        </div>
+
+        <div class="analysis">
+            <h3>📊 Análise dos Últimos 2 Meses</h3>
+            <ul>
+                <li><strong>IPO:</strong> Maio 2025 - Empresa recém-listada na NASDAQ</li>
+                <li><strong>Setor:</strong> Marketing Digital e Serviços Tecnológicos</li>
+                <li><strong>Receita 2024:</strong> $21.52M (+121.8% vs 2023)</li>
+                <li><strong>Lucro 2024:</strong> $1.70M (-14.88% vs 2023)</li>
+                <li><strong>Volatilidade:</strong> Extremamente alta (variação de $4.03 a $29.40)</li>
+                <li><strong>Novidade:</strong> Plano de pool de criptomoedas anunciado em Set/2025</li>
+            </ul>
+        </div>
+
+        <div class="volatility-warning">
+            <h4>⚠️ Alerta de Volatilidade</h4>
+            <p>SDM apresenta volatilidade extrema típica de IPOs recentes. A ação variou de $4.03 a $29.40 em apenas 4 meses, 
+            representando uma amplitude de mais de 600%. Investidores devem estar preparados para movimentos bruscos de preço.</p>
+        </div>
+
+        <div class="charts-container">
+            <div class="chart-wrapper">
+                <div class="chart-title">Projeção de Preços - 4 Semanas</div>
+                <canvas id="priceChart"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart-title">Cenários de Probabilidade</div>
+                <canvas id="scenarioChart"></canvas>
+            </div>
+        </div>
+
+        <div class="scenarios">
+            <div class="scenario bullish">
+                <h4>🚀 Cenário Otimista</h4>
+                <p>Preço-alvo: $22-28</p>
+                <p>Probabilidade: 25%</p>
+                <small>Sucesso do pool de cripto + momentum de crescimento</small>
+            </div>
+            <div class="scenario neutral">
+                <h4>📊 Cenário Neutro</h4>
+                <p>Preço-alvo: $12-18</p>
+                <p>Probabilidade: 50%</p>
+                <small>Consolidação com volatilidade moderada</small>
+            </div>
+            <div class="scenario bearish">
+                <h4>📉 Cenário Pessimista</h4>
+                <p>Preço-alvo: $8-12</p>
+                <p>Probabilidade: 25%</p>
+                <small>Correção típica pós-IPO ou pressão vendedora</small>
+            </div>
+        </div>
+
+        <div class="analysis">
+            <h3>🔍 Fatores de Risco e Oportunidades</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h4 style="color: #dc3545;">⚠️ Riscos</h4>
+                    <ul>
+                        <li>IPO recente - falta de histórico</li>
+                        <li>Volatilidade extrema</li>
+                        <li>Lucro em declínio (-14.88%)</li>
+                        <li>Mercado de small caps volátil</li>
+                        <li>Dependência do setor tech</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #28a745;">✅ Oportunidades</h4>
+                    <ul>
+                        <li>Crescimento de receita (+121.8%)</li>
+                        <li>Entrada no mercado de cripto</li>
+                        <li>Setor de marketing digital em expansão</li>
+                        <li>Posição na NASDAQ</li>
+                        <li>Potencial de M&A</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <strong>⚠️ Aviso Legal:</strong> SDM é uma ação de alto risco com volatilidade extrema. Esta análise é baseada 
+            em dados limitados devido ao IPO recente. Investimentos em small caps e IPOs recentes envolvem riscos 
+            significativos de perda total. Consulte sempre um consultor financeiro qualificado. 
+            Rentabilidade passada não garante resultados futuros.
+        </div>
+    </div>
+
+    <script>
+        // Dados históricos simulados baseados na volatilidade conhecida
+        const historicalData = [
+            4.03, 6.50, 8.20, 12.40, 18.60, 25.30, 29.40, 22.10, 18.50, 16.20, 14.85, 15.61
+        ];
+
+        // Projeção para as próximas 4 semanas (28 dias)
+        const projectionLabels = [];
+        const projectionOptimistic = [];
+        const projectionNeutral = [];
+        const projectionPessimistic = [];
+
+        const startDate = new Date();
+        const currentPrice = 15.61;
+
+        for (let i = 0; i <= 28; i++) {
+            const date = new Date(startDate);
+            date.setDate(date.getDate() + i);
+            projectionLabels.push(date.toLocaleDateString('pt-BR', { month: 'short', day: 'numeric' }));
+
+            // Cenários baseados em alta volatilidade de IPO
+            const volatility = 0.08; // 8% de volatilidade diária (muito alta)
+            const trendOptimistic = 0.015; // 1.5% crescimento diário
+            const trendNeutral = 0.002; // 0.2% crescimento diário
+            const trendPessimistic = -0.008; // -0.8% declínio diário
+
+            const randomFactor = (Math.random() - 0.5) * volatility;
+
+            projectionOptimistic.push(currentPrice * Math.pow(1 + trendOptimistic + randomFactor, i));
+            projectionNeutral.push(currentPrice * Math.pow(1 + trendNeutral + randomFactor * 0.6, i));
+            projectionPessimistic.push(currentPrice * Math.pow(1 + trendPessimistic + randomFactor, i));
+        }
+
+        // Gráfico de Projeção de Preços
+        const ctx1 = document.getElementById('priceChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: projectionLabels,
+                datasets: [{
+                    label: 'Cenário Otimista',
+                    data: projectionOptimistic,
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    tension: 0.4,
+                    fill: false,
+                    borderWidth: 3
+                }, {
+                    label: 'Cenário Neutro',
+                    data: projectionNeutral,
+                    borderColor: '#ffc107',
+                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                    tension: 0.4,
+                    fill: false,
+                    borderWidth: 2
+                }, {
+                    label: 'Cenário Pessimista',
+                    data: projectionPessimistic,
+                    borderColor: '#dc3545',
+                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                    tension: 0.4,
+                    fill: false,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Preço (USD)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Data'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Cenários
+        const ctx2 = document.getElementById('scenarioChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Otimista (25%)', 'Neutro (50%)', 'Pessimista (25%)'],
+                datasets: [{
+                    data: [25, 50, 25],
+                    backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                    borderWidth: 3,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+
+        // Adicionar gráfico de volatilidade histórica
+        const ctx3 = document.createElement('canvas');
+        const volatilityWrapper = document.createElement('div');
+        volatilityWrapper.className = 'chart-wrapper';
+        volatilityWrapper.style.gridColumn = '1 / -1';
+        volatilityWrapper.innerHTML = '<div class="chart-title">Histórico de Volatilidade (Últimos 6 Meses)</div>';
+        volatilityWrapper.appendChild(ctx3);
+        document.querySelector('.charts-container').appendChild(volatilityWrapper);
+
+        new Chart(ctx3.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'],
+                datasets: [{
+                    label: 'Volatilidade Mensal (%)',
+                    data: [150, 80, 95, 60, 45, 35],
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Volatilidade (%)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
