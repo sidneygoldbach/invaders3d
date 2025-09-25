@@ -32,6 +32,15 @@ type
       const Colors: array of TColor);
     procedure DrawGlowEffect(Bitmap: TBitmap; X, Y, Radius: Integer; 
       Color: TColor; Intensity: Single);
+    
+    // Métodos para criar sprites 3D específicos
+    procedure CreateRobot3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+    procedure CreateUFO3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+    procedure CreateFighterJet3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+    procedure CreateParatrooper3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+    procedure CreateLaserBeam3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+    procedure CreateExplosion3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+    procedure CreateStarfield3D(Bitmap: TBitmap);
       
   public
     constructor Create(Canvas: TCanvas);
@@ -79,11 +88,12 @@ var
   ResourceStream: TResourceStream;
   SVGData: string;
   StringList: TStringList;
+  SVGFileName: string;
 begin
   Result := TBitmap.Create;
   
   try
-    // Carregar SVG do recurso
+    // Primeiro, tentar carregar SVG do recurso
     ResourceStream := TResourceStream.Create(HInstance, ResourceName, RT_RCDATA);
     try
       StringList := TStringList.Create;
@@ -104,55 +114,144 @@ begin
   except
     on E: Exception do
     begin
-      // Se falhar ao carregar SVG, criar sprite 3D procedural
-      Result.Width := 128;
-      Result.Height := 128;
-      Result.PixelFormat := pf32bit;
+      // Se falhar ao carregar do recurso, tentar carregar arquivo SVG diretamente
+      SVGFileName := '';
       
-      // Criar sprite 3D baseado no tipo
       if ResourceName = 'PLAYER_ROBOT' then
-        Draw3DSphere(Result, 64, 64, 30, [$00FFFFFF, $00AAAAFF, $004488CC, $00224466])
+        SVGFileName := 'player_robot.svg'
       else if ResourceName = 'UFO_CLASSIC' then
-        Draw3DSphere(Result, 64, 64, 35, [$00CCCCCC, $00888888, $00444444, $00222222])
+        SVGFileName := 'ufo_classic.svg'
       else if ResourceName = 'FIGHTER_JET' then
-        Draw3DSphere(Result, 64, 64, 25, [$00DDDDDD, $00999999, $00555555, $00333333])
+        SVGFileName := 'fighter_jet.svg'
       else if ResourceName = 'PARATROOPER' then
-        Draw3DSphere(Result, 64, 64, 20, [$0088AA88, $00556655, $00334433, $00223322])
+        SVGFileName := 'paratrooper.svg'
       else if ResourceName = 'LASER_BEAM' then
-        Draw3DSphere(Result, 64, 64, 15, [$00FFFFFF, $00AAFFFF, $0000FFFF, $000088FF])
+        SVGFileName := 'laser_beam.svg'
       else if ResourceName = 'EXPLOSION_PARTICLE' then
-        Draw3DSphere(Result, 64, 64, 40, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400])
+        SVGFileName := 'explosion_particle.svg'
+      else if ResourceName = 'STARFIELD_BG' then
+        SVGFileName := 'starfield_bg.svg';
+      
+      // Tentar carregar arquivo SVG do disco
+      if (SVGFileName <> '') and FileExists(SVGFileName) then
+      begin
+        try
+          StringList := TStringList.Create;
+          try
+            StringList.LoadFromFile(SVGFileName);
+            SVGData := StringList.Text;
+            Result := SVGToBitmap(SVGData, 128, 128);
+          finally
+            StringList.Free;
+          end;
+        except
+          // Se falhar ao carregar SVG do disco, usar sprite 3D procedural como último recurso
+          Result.Width := 128;
+          Result.Height := 128;
+          Result.PixelFormat := pf32bit;
+          
+          if ResourceName = 'PLAYER_ROBOT' then
+            Draw3DSphere(Result, 64, 64, 30, [$00FFFFFF, $00AAAAFF, $004488CC, $00224466])
+          else if ResourceName = 'UFO_CLASSIC' then
+            Draw3DSphere(Result, 64, 64, 35, [$00CCCCCC, $00888888, $00444444, $00222222])
+          else if ResourceName = 'FIGHTER_JET' then
+            Draw3DSphere(Result, 64, 64, 25, [$00DDDDDD, $00999999, $00555555, $00333333])
+          else if ResourceName = 'PARATROOPER' then
+            Draw3DSphere(Result, 64, 64, 20, [$0088AA88, $00556655, $00334433, $00223322])
+          else if ResourceName = 'LASER_BEAM' then
+            Draw3DSphere(Result, 64, 64, 15, [$00FFFFFF, $00AAFFFF, $0000FFFF, $000088FF])
+          else if ResourceName = 'EXPLOSION_PARTICLE' then
+            Draw3DSphere(Result, 64, 64, 40, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400])
+          else
+            Draw3DSphere(Result, 64, 64, 32, [$00FFFFFF, $00CCCCCC, $00888888, $00444444]);
+        end;
+      end
       else
-        Draw3DSphere(Result, 64, 64, 32, [$00FFFFFF, $00CCCCCC, $00888888, $00444444]);
+      begin
+        // Se não encontrar arquivo SVG, usar sprite 3D procedural
+        Result.Width := 128;
+        Result.Height := 128;
+        Result.PixelFormat := pf32bit;
+        
+        if ResourceName = 'PLAYER_ROBOT' then
+          Draw3DSphere(Result, 64, 64, 30, [$00FFFFFF, $00AAAAFF, $004488CC, $00224466])
+        else if ResourceName = 'UFO_CLASSIC' then
+          Draw3DSphere(Result, 64, 64, 35, [$00CCCCCC, $00888888, $00444444, $00222222])
+        else if ResourceName = 'FIGHTER_JET' then
+          Draw3DSphere(Result, 64, 64, 25, [$00DDDDDD, $00999999, $00555555, $00333333])
+        else if ResourceName = 'PARATROOPER' then
+          Draw3DSphere(Result, 64, 64, 20, [$0088AA88, $00556655, $00334433, $00223322])
+        else if ResourceName = 'LASER_BEAM' then
+          Draw3DSphere(Result, 64, 64, 15, [$00FFFFFF, $00AAFFFF, $0000FFFF, $000088FF])
+        else if ResourceName = 'EXPLOSION_PARTICLE' then
+          Draw3DSphere(Result, 64, 64, 40, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400])
+        else
+          Draw3DSphere(Result, 64, 64, 32, [$00FFFFFF, $00CCCCCC, $00888888, $00444444]);
+      end;
     end;
   end;
 end;
 
 function TSpriteManager.SVGToBitmap(const SVGData: string; Width, Height: Integer): TBitmap;
+var
+  i, j: Integer;
+  centerX, centerY: Integer;
+  distance: Single;
+  pixelColor: TColor;
+  scanLine: PByteArray;
+  normalizedDist: Single;
+  r, g, b: Byte;
+  alpha: Byte;
 begin
-  // Implementação simplificada - na prática, seria necessário um parser SVG completo
-  // Por enquanto, vamos criar sprites 3D procedurais baseados no conteúdo SVG
-  
   Result := TBitmap.Create;
   Result.Width := Width;
   Result.Height := Height;
   Result.PixelFormat := pf32bit;
   
-  // Analisar o SVG e criar sprite correspondente
+  centerX := Width div 2;
+  centerY := Height div 2;
+  
+  // Analisar o SVG e criar sprite 3D correspondente baseado no conteúdo
   if Pos('player_robot', SVGData) > 0 then
-    Draw3DSphere(Result, Width div 2, Height div 2, 30, [$00FFFFFF, $00AAAAFF, $004488CC, $00224466])
+  begin
+    // Criar robô 3D detalhado
+    CreateRobot3D(Result, centerX, centerY);
+  end
   else if Pos('ufo_classic', SVGData) > 0 then
-    Draw3DSphere(Result, Width div 2, Height div 2, 35, [$00CCCCCC, $00888888, $00444444, $00222222])
+  begin
+    // Criar UFO 3D detalhado
+    CreateUFO3D(Result, centerX, centerY);
+  end
   else if Pos('fighter_jet', SVGData) > 0 then
-    Draw3DSphere(Result, Width div 2, Height div 2, 25, [$00DDDDDD, $00999999, $00555555, $00333333])
+  begin
+    // Criar jato 3D detalhado
+    CreateFighterJet3D(Result, centerX, centerY);
+  end
   else if Pos('paratrooper', SVGData) > 0 then
-    Draw3DSphere(Result, Width div 2, Height div 2, 20, [$0088AA88, $00556655, $00334433, $00223322])
+  begin
+    // Criar paraquedista 3D detalhado
+    CreateParatrooper3D(Result, centerX, centerY);
+  end
   else if Pos('laser_beam', SVGData) > 0 then
-    Draw3DSphere(Result, Width div 2, Height div 2, 15, [$00FFFFFF, $00AAFFFF, $0000FFFF, $000088FF])
+  begin
+    // Criar laser 3D detalhado
+    CreateLaserBeam3D(Result, centerX, centerY);
+  end
   else if Pos('explosion_particle', SVGData) > 0 then
-    Draw3DSphere(Result, Width div 2, Height div 2, 40, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400])
+  begin
+    // Criar explosão 3D detalhada
+    CreateExplosion3D(Result, centerX, centerY);
+  end
+  else if Pos('starfield_bg', SVGData) > 0 then
+  begin
+    // Criar campo de estrelas 3D
+    CreateStarfield3D(Result);
+  end
   else
-    Draw3DSphere(Result, Width div 2, Height div 2, 32, [$00FFFFFF, $00CCCCCC, $00888888, $00444444]);
+  begin
+    // Fallback para esfera genérica
+    Draw3DSphere(Result, centerX, centerY, 32, [$00FFFFFF, $00CCCCCC, $00888888, $00444444]);
+  end;
 end;
 
 procedure TSpriteManager.Draw3DSphere(Bitmap: TBitmap; X, Y, Radius: Integer; 
@@ -367,6 +466,160 @@ begin
   AnimScale := Scale + Sin(Frame * 0.1) * 0.1; // Pulsação
   
   DrawSprite(SpriteType, X, Y, AnimScale, AnimRotation, Alpha);
+end;
+
+// Implementações dos métodos para criar sprites 3D específicos
+
+procedure TSpriteManager.CreateRobot3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+begin
+  // Limpar bitmap
+  Bitmap.Canvas.Brush.Color := clBlack;
+  Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  
+  // Corpo principal do robô (esfera azul metálica)
+  Draw3DSphere(Bitmap, CenterX, CenterY + 10, 35, [$00FFFFFF, $00AAAAFF, $004488CC, $00224466]);
+  
+  // Cabeça do robô (esfera menor)
+  Draw3DSphere(Bitmap, CenterX, CenterY - 25, 20, [$00FFFFFF, $00CCCCFF, $006699DD, $00334477]);
+  
+  // Olhos vermelhos brilhantes
+  Draw3DSphere(Bitmap, CenterX - 8, CenterY - 28, 4, [$00FFFFFF, $00FFAAAA, $00FF4444, $00AA0000]);
+  Draw3DSphere(Bitmap, CenterX + 8, CenterY - 28, 4, [$00FFFFFF, $00FFAAAA, $00FF4444, $00AA0000]);
+  
+  // Braços robóticos
+  Draw3DSphere(Bitmap, CenterX - 40, CenterY, 15, [$00DDDDDD, $00AAAAAA, $00777777, $00444444]);
+  Draw3DSphere(Bitmap, CenterX + 40, CenterY, 15, [$00DDDDDD, $00AAAAAA, $00777777, $00444444]);
+  
+  // Jatos propulsores (efeito de fogo)
+  Draw3DSphere(Bitmap, CenterX - 15, CenterY + 45, 8, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400]);
+  Draw3DSphere(Bitmap, CenterX + 15, CenterY + 45, 8, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400]);
+end;
+
+procedure TSpriteManager.CreateUFO3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+begin
+  // Limpar bitmap
+  Bitmap.Canvas.Brush.Color := clBlack;
+  Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  
+  // Corpo principal do UFO (disco achatado)
+  Draw3DSphere(Bitmap, CenterX, CenterY + 5, 45, [$00CCCCCC, $00888888, $00444444, $00222222]);
+  
+  // Cúpula superior transparente
+  Draw3DSphere(Bitmap, CenterX, CenterY - 10, 25, [$00FFFFFF, $00AAFFFF, $004488CC, $00224466]);
+  
+  // Luzes coloridas ao redor do disco
+  Draw3DSphere(Bitmap, CenterX - 35, CenterY + 5, 6, [$00FFFFFF, $00FF4444, $00AA0000, $00550000]);
+  Draw3DSphere(Bitmap, CenterX - 12, CenterY + 15, 6, [$00FFFFFF, $0044FF44, $0000AA00, $00005500]);
+  Draw3DSphere(Bitmap, CenterX + 12, CenterY + 15, 6, [$00FFFFFF, $004444FF, $000000AA, $00000055]);
+  Draw3DSphere(Bitmap, CenterX + 35, CenterY + 5, 6, [$00FFFFFF, $00FFFF44, $00AAAA00, $00555500]);
+  
+  // Raio trator (opcional)
+  Draw3DSphere(Bitmap, CenterX, CenterY + 35, 12, [$00FFFFFF, $00AAFFFF, $0044AAFF, $00226688]);
+end;
+
+procedure TSpriteManager.CreateFighterJet3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+begin
+  // Limpar bitmap
+  Bitmap.Canvas.Brush.Color := clBlack;
+  Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  
+  // Fuselagem principal
+  Draw3DSphere(Bitmap, CenterX, CenterY, 30, [$00DDDDDD, $00999999, $00555555, $00333333]);
+  
+  // Cockpit
+  Draw3DSphere(Bitmap, CenterX, CenterY - 15, 18, [$00FFFFFF, $00AAFFFF, $0066AADD, $00335577]);
+  
+  // Asas
+  Draw3DSphere(Bitmap, CenterX - 35, CenterY + 10, 20, [$00BBBBBB, $00888888, $00444444, $00222222]);
+  Draw3DSphere(Bitmap, CenterX + 35, CenterY + 10, 20, [$00BBBBBB, $00888888, $00444444, $00222222]);
+  
+  // Motores/Jatos
+  Draw3DSphere(Bitmap, CenterX - 20, CenterY + 35, 10, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400]);
+  Draw3DSphere(Bitmap, CenterX + 20, CenterY + 35, 10, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400]);
+end;
+
+procedure TSpriteManager.CreateParatrooper3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+begin
+  // Limpar bitmap
+  Bitmap.Canvas.Brush.Color := clBlack;
+  Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  
+  // Paraquedas
+  Draw3DSphere(Bitmap, CenterX, CenterY - 20, 40, [$00FFFFFF, $0088AA88, $00556655, $00334433]);
+  
+  // Corpo do paraquedista
+  Draw3DSphere(Bitmap, CenterX, CenterY + 15, 12, [$00DDDDDD, $00999999, $00666666, $00333333]);
+  
+  // Cabeça
+  Draw3DSphere(Bitmap, CenterX, CenterY + 5, 8, [$00FFDDAA, $00DDAA88, $00AA7755, $00774433]);
+  
+  // Equipamentos
+  Draw3DSphere(Bitmap, CenterX - 8, CenterY + 18, 5, [$00AAAAAA, $00777777, $00444444, $00222222]);
+  Draw3DSphere(Bitmap, CenterX + 8, CenterY + 18, 5, [$00AAAAAA, $00777777, $00444444, $00222222]);
+end;
+
+procedure TSpriteManager.CreateLaserBeam3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+begin
+  // Limpar bitmap
+  Bitmap.Canvas.Brush.Color := clBlack;
+  Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  
+  // Núcleo do laser (muito brilhante)
+  Draw3DSphere(Bitmap, CenterX, CenterY, 8, [$00FFFFFF, $00FFFFFF, $00AAFFFF, $0066AAFF]);
+  
+  // Halo externo
+  Draw3DSphere(Bitmap, CenterX, CenterY, 15, [$00AAFFFF, $0066AAFF, $003388DD, $00225588]);
+  
+  // Efeito de brilho adicional
+  Draw3DSphere(Bitmap, CenterX, CenterY, 25, [$0044AAFF, $002288DD, $001166BB, $00004488]);
+end;
+
+procedure TSpriteManager.CreateExplosion3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
+begin
+  // Limpar bitmap
+  Bitmap.Canvas.Brush.Color := clBlack;
+  Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  
+  // Núcleo da explosão (branco quente)
+  Draw3DSphere(Bitmap, CenterX, CenterY, 20, [$00FFFFFF, $00FFFFFF, $00FFFF88, $00FFDD44]);
+  
+  // Camada intermediária (amarelo-laranja)
+  Draw3DSphere(Bitmap, CenterX, CenterY, 35, [$00FFFF00, $00FFAA00, $00FF6600, $00DD4400]);
+  
+  // Camada externa (vermelho-escuro)
+  Draw3DSphere(Bitmap, CenterX, CenterY, 50, [$00FF4400, $00DD2200, $00AA1100, $00770000]);
+  
+  // Partículas espalhadas
+  Draw3DSphere(Bitmap, CenterX - 25, CenterY - 15, 8, [$00FFAA00, $00FF6600, $00DD4400, $00AA2200]);
+  Draw3DSphere(Bitmap, CenterX + 30, CenterY - 20, 6, [$00FFAA00, $00FF6600, $00DD4400, $00AA2200]);
+  Draw3DSphere(Bitmap, CenterX - 15, CenterY + 25, 10, [$00FFAA00, $00FF6600, $00DD4400, $00AA2200]);
+  Draw3DSphere(Bitmap, CenterX + 20, CenterY + 30, 7, [$00FFAA00, $00FF6600, $00DD4400, $00AA2200]);
+end;
+
+procedure TSpriteManager.CreateStarfield3D(Bitmap: TBitmap);
+var
+  i: Integer;
+  x, y, size: Integer;
+  brightness: Byte;
+begin
+  // Limpar bitmap
+  Bitmap.Canvas.Brush.Color := clBlack;
+  Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  
+  // Criar campo de estrelas aleatório
+  for i := 1 to 50 do
+  begin
+    x := Random(Bitmap.Width);
+    y := Random(Bitmap.Height);
+    size := Random(3) + 1;
+    brightness := Random(128) + 127;
+    
+    // Estrela com brilho variável
+    Draw3DSphere(Bitmap, x, y, size, [RGB(brightness, brightness, brightness), 
+                                      RGB(brightness div 2, brightness div 2, brightness div 2),
+                                      RGB(brightness div 4, brightness div 4, brightness div 4),
+                                      RGB(brightness div 8, brightness div 8, brightness div 8)]);
+  end;
 end;
 
 end.
