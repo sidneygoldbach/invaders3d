@@ -2,7 +2,7 @@ program DInvader3D;
 
 uses
   Vcl.Forms,
-  MainForm in 'MainForm.pas' {Form1},
+  MainForm in 'MainForm.pas' {frmMain},
   GameEngine in 'GameEngine.pas',
   GameObjects in 'GameObjects.pas',
   AudioSystem in 'AudioSystem.pas',
@@ -17,6 +17,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.Title := 'D-Invader 3D - Space Invaders em Delphi';
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TfrmMain, frmMain);
   Application.Run;
 end.

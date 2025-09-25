@@ -3,7 +3,7 @@ unit GameObjects;
 interface
 
 uses
-  System.Classes, System.SysUtils, System.Types, System.Math,
+  System.Classes, System.SysUtils, System.Types, System.Math, System.UITypes,
   Vcl.Graphics, System.Generics.Collections, Winapi.Windows;
 
 type

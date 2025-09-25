@@ -3,7 +3,7 @@ unit Renderer3D;
 interface
 
 uses
-  System.Classes, System.SysUtils, System.Types, System.Math,
+  System.Classes, System.SysUtils, System.Types, System.Math, System.UITypes,
   System.Generics.Collections, Vcl.Graphics, Vcl.Controls, Vcl.ExtCtrls, 
   Winapi.Windows, GameObjects, SpriteManager, EffectsManager;
 

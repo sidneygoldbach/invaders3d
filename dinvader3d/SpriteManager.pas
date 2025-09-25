@@ -3,7 +3,7 @@ unit SpriteManager;
 interface
 
 uses
-  Winapi.Windows, System.Classes, Vcl.Graphics, System.SysUtils, System.Math;
+  Winapi.Windows, System.Classes, System.UITypes, Vcl.Graphics, System.SysUtils, System.Math;
 
 type
   // Tipos de sprites disponíveis
