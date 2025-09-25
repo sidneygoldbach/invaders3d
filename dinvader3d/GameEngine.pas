@@ -110,7 +110,7 @@ begin
   FLastUpdate := GetTickCount;
   
   // Criar jogador
-  FPlayer := TPlayer.Create(TVector3D.Create(0, -2, -5));
+  FPlayer := TPlayer.Create(TVector3D.Create(0, -5, -5));
   
   // Inicializar campo de estrelas
   InitializeStarField;
@@ -448,9 +448,9 @@ var
   Enemy: TEnemy;
   X, Y, Z: Single;
 begin
-  // Posições aleatórias na frente da câmera
+  // Posições aleatórias na parte superior da tela (Space Invaders clássico)
   X := Random * 16 - 8;  // -8 a 8
-  Y := Random * 6 - 3;   // -3 a 3
+  Y := Random * 3 + 2;   // 2 a 5 (parte superior)
   Z := Random * 10 - 20; // -20 a -10 (na frente da câmera)
   
   Enemy := TEnemy.Create(TVector3D.Create(X, Y, Z));
