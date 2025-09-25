@@ -110,7 +110,7 @@ begin
   FLastUpdate := GetTickCount;
   
   // Criar jogador
-  FPlayer := TPlayer.Create(TVector3D.Create(0, -2, 5));
+  FPlayer := TPlayer.Create(TVector3D.Create(0, -2, -5));
   
   // Inicializar campo de estrelas
   InitializeStarField;

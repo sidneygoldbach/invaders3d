@@ -52,7 +52,7 @@ begin
   FCanvas := FPaintBox.Canvas;
   FWidth := FPaintBox.Width;
   FHeight := FPaintBox.Height;
-  FCameraZ := 0;
+  FCameraZ := -15;
   InitializeProjection;
 end;
 
