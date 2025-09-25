@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradientes para efeito 3D esférico -->
+    <radialGradient id="parachuteGrad" cx="0.3" cy="0.2" r="0.9">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset="20%" stop-color="#FFEEEE" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#DDDDDD" stop-opacity="1"/>
+      <stop offset="80%" stop-color="#AAAAAA" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#777777" stop-opacity="1"/>
+    </radialGradient>
+    
+    <radialGradient id="soldierBodyGrad" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#88AA88" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#556655" stop-opacity="1"/>
+      <stop offset="80%" stop-color="#334433" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#223322" stop-opacity="1"/>
+    </radialGradient>
+    
+    <radialGradient id="helmetGrad" cx="0.25" cy="0.25" r="0.9">
+      <stop offset="0%" stop-color="#CCCCCC" stop-opacity="1"/>
+      <stop offset="30%" stop-color="#999999" stop-opacity="1"/>
+      <stop offset="70%" stop-color="#666666" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#444444" stop-opacity="1"/>
+    </radialGradient>
+    
+    <radialGradient id="equipmentGrad" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#AAAAAA" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#777777" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#444444" stop-opacity="1"/>
+    </radialGradient>
+    
+    <radialGradient id="ropeGrad" cx="0.5" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#FFEEAA" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#CCBB77" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#998844" stop-opacity="1"/>
+    </radialGradient>
+    
+    <!-- Filtros para brilho e sombra -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="innerShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feOffset dx="1" dy="1"/>
+      <feGaussianBlur stdDeviation="1" result="offset-blur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.3"/>
+      <feComposite in2="offset-blur" operator="in"/>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Paraquedas principal -->
+  <path d="M 64 15 Q 30 25 20 45 Q 25 55 40 50 Q 52 45 64 48 Q 76 45 88 50 Q 103 55 108 45 Q 98 25 64 15 Z" 
+        fill="url(#parachuteGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Detalhes do paraquedas (seções) -->
+  <path d="M 64 15 Q 45 22 35 35 Q 45 42 64 40 Z" fill="#EEEEEE" opacity="0.8"/>
+  <path d="M 64 15 Q 83 22 93 35 Q 83 42 64 40 Z" fill="#DDDDDD" opacity="0.8"/>
+  
+  <!-- Linhas do paraquedas -->
+  <line x1="64" y1="48" x2="25" y2="45" stroke="url(#ropeGrad)" stroke-width="1"/>
+  <line x1="64" y1="48" x2="35" y2="35" stroke="url(#ropeGrad)" stroke-width="1"/>
+  <line x1="64" y1="48" x2="64" y2="25" stroke="url(#ropeGrad)" stroke-width="1"/>
+  <line x1="64" y1="48" x2="93" y2="35" stroke="url(#ropeGrad)" stroke-width="1"/>
+  <line x1="64" y1="48" x2="103" y2="45" stroke="url(#ropeGrad)" stroke-width="1"/>
+  
+  <!-- Corpo do soldado -->
+  <ellipse cx="64" cy="75" rx="12" ry="20" fill="url(#soldierBodyGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Cabeça/capacete -->
+  <circle cx="64" cy="58" r="8" fill="url(#helmetGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Visor do capacete -->
+  <ellipse cx="64" cy="56" rx="5" ry="4" fill="#444444" opacity="0.8"/>
+  <ellipse cx="64" cy="55" rx="3" ry="2" fill="#AAFFFF" opacity="0.4"/>
+  
+  <!-- Braços -->
+  <ellipse cx="52" cy="70" rx="4" ry="12" fill="url(#soldierBodyGrad)" filter="url(#innerShadow)" transform="rotate(-20 52 70)"/>
+  <ellipse cx="76" cy="70" rx="4" ry="12" fill="url(#soldierBodyGrad)" filter="url(#innerShadow)" transform="rotate(20 76 70)"/>
+  
+  <!-- Pernas -->
+  <ellipse cx="58" cy="95" rx="4" ry="15" fill="url(#soldierBodyGrad)" filter="url(#innerShadow)"/>
+  <ellipse cx="70" cy="95" rx="4" ry="15" fill="url(#soldierBodyGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Botas -->
+  <ellipse cx="58" cy="108" rx="5" ry="6" fill="#333333" filter="url(#innerShadow)"/>
+  <ellipse cx="70" cy="108" rx="5" ry="6" fill="#333333" filter="url(#innerShadow)"/>
+  
+  <!-- Equipamentos -->
+  <rect x="60" y="68" width="8" height="12" rx="2" fill="url(#equipmentGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Mochila -->
+  <ellipse cx="64" cy="82" rx="6" ry="8" fill="url(#equipmentGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Arma -->
+  <rect x="48" y="75" width="12" height="2" rx="1" fill="#444444" transform="rotate(-30 54 76)"/>
+  <circle cx="45" cy="78" r="2" fill="#666666" transform="rotate(-30 54 76)"/>
+  
+  <!-- Detalhes do uniforme -->
+  <rect x="61" y="70" width="6" height="2" rx="1" fill="#666666"/>
+  <rect x="61" y="74" width="6" height="2" rx="1" fill="#666666"/>
+  <rect x="61" y="78" width="6" height="2" rx="1" fill="#666666"/>
+  
+  <!-- Insígnias -->
+  <circle cx="59" cy="72" r="1" fill="#FFFF00"/>
+  <circle cx="69" cy="72" r="1" fill="#FFFF00"/>
+  
+  <!-- Brilhos especulares para efeito 3D -->
+  <ellipse cx="58" cy="50" rx="3" ry="4" fill="#FFFFFF" opacity="0.6"/>
+  <ellipse cx="58" cy="65" rx="4" ry="8" fill="#FFFFFF" opacity="0.3"/>
+  <ellipse cx="45" cy="35" rx="8" ry="6" fill="#FFFFFF" opacity="0.4"/>
+  
+  <!-- Sombra do paraquedas no soldado -->
+  <ellipse cx="64" cy="75" rx="10" ry="18" fill="#000000" opacity="0.2"/>
+  
+  <!-- Detalhes adicionais do capacete -->
+  <rect x="62" y="52" width="4" height="2" rx="1" fill="#AAAAAA"/>
+  <circle cx="64" cy="50" r="1" fill="#FF0000" filter="url(#glow)"/>
+  
+  <!-- Cordas de controle -->
+  <line x1="50" y1="65" x2="35" y2="40" stroke="url(#ropeGrad)" stroke-width="0.5"/>
+  <line x1="78" y1="65" x2="93" y2="40" stroke="url(#ropeGrad)" stroke-width="0.5"/>
+</svg>

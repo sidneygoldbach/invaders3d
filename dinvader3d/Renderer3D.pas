@@ -4,7 +4,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, System.Types, System.Math,
-  System.Generics.Collections, Vcl.Graphics, Vcl.Controls, Vcl.ExtCtrls, GameObjects;
+  System.Generics.Collections, Vcl.Graphics, Vcl.Controls, Vcl.ExtCtrls, GameObjects, SpriteManager, EffectsManager;
 
 type
   TRenderer3D = class
@@ -14,6 +14,8 @@ type
     FWidth, FHeight: Integer;
     FCameraZ: Single;
     FProjectionMatrix: array[0..3, 0..3] of Single;
+    FSpriteManager: TSpriteManager;
+    FEffectsManager: TEffectsManager;
     
     procedure InitializeProjection;
     function ProjectPoint(const Point3D: TVector3D): TPoint;
@@ -29,6 +31,7 @@ type
     procedure Resize(AWidth, AHeight: Integer);
     procedure BeginRender;
     procedure EndRender;
+    procedure Update(DeltaTime: Single);
     
     // Métodos de renderização
     procedure RenderPlayer(Player: TPlayer);
@@ -53,11 +56,21 @@ begin
   FWidth := FPaintBox.Width;
   FHeight := FPaintBox.Height;
   FCameraZ := -15;
+  
+  // Inicializar SpriteManager
+  FSpriteManager := TSpriteManager.Create(FCanvas);
+  FSpriteManager.LoadSprites;
+  
+  // Inicializar EffectsManager
+  FEffectsManager := TEffectsManager.Create(FCanvas, FWidth, FHeight);
+  
   InitializeProjection;
 end;
 
 destructor TRenderer3D.Destroy;
 begin
+  FEffectsManager.Free;
+  FSpriteManager.Free;
   inherited Destroy;
 end;
 
@@ -282,106 +295,168 @@ end;
 
 procedure TRenderer3D.EndRender;
 begin
+  // Renderizar efeitos especiais por último
+  FEffectsManager.Render;
+  
   // Finalizar renderização (se necessário)
+end;
+
+procedure TRenderer3D.Update(DeltaTime: Single);
+begin
+  // Atualizar sistema de efeitos especiais
+  FEffectsManager.Update(DeltaTime);
 end;
 
 procedure TRenderer3D.RenderPlayer(Player: TPlayer);
 var
   Center: TPoint;
-  Size: Integer;
+  Scale: Single;
 begin
   Center := ProjectPoint(Player.Position);
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
-  Size := 30;
-  DrawWireframeCube(Center, Size, Player.Color);
+  // Calcular escala baseada na distância Z
+  Scale := 1.0 + (Player.Position.Z / 10.0);
+  Scale := Max(0.5, Min(2.0, Scale)); // Limitar escala
+  
+  // Adicionar efeito de propulsão
+  FEffectsManager.AddEngineFlame(Player.Position.X, Player.Position.Y + 15, Player.Position.Z,
+                                Player.Velocity.X, Player.Velocity.Y, Player.Velocity.Z);
+  
+  // Desenhar sprite 3D do robô jogador
+  FSpriteManager.DrawSprite(stPlayerRobot, Center.X, Center.Y, Scale, 0, 255);
 end;
 
 procedure TRenderer3D.RenderBullet(Bullet: TBullet);
 var
   Center: TPoint;
-  Size: Integer;
+  Scale: Single;
 begin
   Center := ProjectPoint(Bullet.Position);
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
-  Size := 8;
-  FCanvas.Pen.Color := Bullet.Color;
-  FCanvas.Pen.Width := 3;
-  FCanvas.Brush.Color := Bullet.Color;
-  FCanvas.Brush.Style := bsSolid;
-  FCanvas.Ellipse(Center.X - Size, Center.Y - Size,
-                  Center.X + Size, Center.Y + Size);
+  // Calcular escala baseada na distância Z
+  Scale := 0.3 + (Bullet.Position.Z / 20.0);
+  Scale := Max(0.2, Min(0.8, Scale)); // Limitar escala para projéteis
+  
+  // Adicionar rastro de energia
+  FEffectsManager.AddLaserTrail(Bullet.Position.X, Bullet.Position.Y, Bullet.Position.Z,
+                               Bullet.Velocity.X, Bullet.Velocity.Y, Bullet.Velocity.Z);
+  
+  // Desenhar sprite 3D do laser energético
+  FSpriteManager.DrawSprite(stLaserBeam, Center.X, Center.Y, Scale, 0, 255);
 end;
 
 procedure TRenderer3D.RenderEnemy(Enemy: TEnemy);
 var
   Center: TPoint;
-  Size: Integer;
+  Scale: Single;
+  Frame: Integer;
 begin
   Center := ProjectPoint(Enemy.Position);
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
-  Size := 25;
-  DrawWireframeSphere(Center, Size, Enemy.Color);
+  // Calcular escala baseada na distância Z
+  Scale := 0.8 + (Enemy.Position.Z / 15.0);
+  Scale := Max(0.4, Min(1.5, Scale)); // Limitar escala
+  
+  // Frame de animação baseado no tempo
+  Frame := Round(GetTickCount / 100) mod 360;
+  
+  // Adicionar campo de energia ao redor do UFO
+  FEffectsManager.AddEnergyField(Enemy.Position.X, Enemy.Position.Y, Enemy.Position.Z);
+  
+  // Adicionar brilho
+  FEffectsManager.AddGlow(Enemy.Position.X, Enemy.Position.Y, Enemy.Position.Z, 
+                         RGB(0, 255, 255), 0.5);
+  
+  // Desenhar sprite 3D do UFO clássico com animação
+  FSpriteManager.DrawAnimatedSprite(stUfoClassic, Center.X, Center.Y, Frame, Scale, 0, 255);
 end;
 
 procedure TRenderer3D.RenderAirplane(Airplane: TAirplane);
 var
   Center: TPoint;
-  Size: Integer;
+  Scale: Single;
+  Rotation: Single;
 begin
   Center := ProjectPoint(Airplane.Position);
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
-  Size := 40;
+  // Calcular escala baseada na distância Z
+  Scale := 1.2 + (Airplane.Position.Z / 12.0);
+  Scale := Max(0.6, Min(2.0, Scale)); // Limitar escala
   
-  FCanvas.Pen.Color := Airplane.Color;
-  FCanvas.Pen.Width := 2;
+  // Rotação baseada na velocidade
+  Rotation := ArcTan2(Airplane.Velocity.Y, Airplane.Velocity.X) * 180 / Pi;
   
-  // Desenhar corpo do avião
-  FCanvas.MoveTo(Center.X - Size, Center.Y);
-  FCanvas.LineTo(Center.X + Size, Center.Y);
+  // Adicionar chamas dos motores
+  FEffectsManager.AddEngineFlame(Airplane.Position.X - 20, Airplane.Position.Y, Airplane.Position.Z,
+                                Airplane.Velocity.X, Airplane.Velocity.Y, Airplane.Velocity.Z);
   
-  // Desenhar asas
-  FCanvas.MoveTo(Center.X - Size div 2, Center.Y - Size div 3);
-  FCanvas.LineTo(Center.X + Size div 2, Center.Y + Size div 3);
+  // Desenhar sprite 3D da nave de combate
+  FSpriteManager.DrawSprite(stFighterJet, Center.X, Center.Y, Scale, Rotation, 255);
 end;
 
 procedure TRenderer3D.RenderParachutist(Parachutist: TParachutist);
 var
   Center: TPoint;
-  Size: Integer;
+  Scale: Single;
+  Frame: Integer;
 begin
   Center := ProjectPoint(Parachutist.Position);
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
-  Size := 15;
+  // Calcular escala baseada na distância Z
+  Scale := 0.6 + (Parachutist.Position.Z / 18.0);
+  Scale := Max(0.3, Min(1.2, Scale)); // Limitar escala
   
-  FCanvas.Pen.Color := Parachutist.Color;
-  FCanvas.Pen.Width := 2;
-  FCanvas.Brush.Style := bsClear;
+  // Frame de animação para movimento do paraquedas
+  Frame := Round(GetTickCount / 150) mod 360;
   
+  // Desenhar sprite 3D do paraquedista
   if Parachutist.ParachuteOpen then
-  begin
-    // Desenhar paraquedas
-    FCanvas.Ellipse(Center.X - Size * 2, Center.Y - Size * 2,
-                    Center.X + Size * 2, Center.Y);
-    // Linhas do paraquedas
-    FCanvas.MoveTo(Center.X - Size, Center.Y - Size);
-    FCanvas.LineTo(Center.X, Center.Y + Size);
-    FCanvas.MoveTo(Center.X + Size, Center.Y - Size);
-    FCanvas.LineTo(Center.X, Center.Y + Size);
-  end;
-  
-  // Desenhar pessoa
-  FCanvas.Ellipse(Center.X - Size div 2, Center.Y + Size - Size div 2,
-                  Center.X + Size div 2, Center.Y + Size + Size div 2);
+    FSpriteManager.DrawAnimatedSprite(stParatrooper, Center.X, Center.Y, Frame, Scale, 0, 255)
+  else
+    FSpriteManager.DrawSprite(stParatrooper, Center.X, Center.Y, Scale * 0.7, 0, 255);
 end;
 
 procedure TRenderer3D.RenderExplosion(Explosion: TExplosion);
+var
+  Center: TPoint;
+  Scale: Single;
+  Frame: Integer;
+  Alpha: Byte;
+  Intensity: Single;
 begin
-  DrawExplosion(Explosion);
+  Center := ProjectPoint(Explosion.Position);
+  if (Center.X < -500) or (Center.Y < -500) then Exit;
+  
+  // Calcular escala baseada na idade da explosão
+  Scale := 0.5 + (Explosion.Age / Explosion.MaxAge) * 2.0;
+  Scale := Max(0.3, Min(3.0, Scale));
+  
+  // Frame de animação rápida para explosão
+  Frame := Round(GetTickCount / 50) mod 360;
+  
+  // Alpha baseado na idade (fade out)
+  Alpha := Round(255 * (1.0 - (Explosion.Age / Explosion.MaxAge)));
+  Alpha := Max(50, Min(255, Alpha));
+  
+  // Intensidade baseada na idade
+  Intensity := 1.0 - (Explosion.Age / Explosion.MaxAge);
+  
+  // Adicionar efeitos de partículas de explosão
+  FEffectsManager.AddExplosion(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z, Intensity);
+  
+  // Adicionar onda de choque
+  if Explosion.Age < Explosion.MaxAge * 0.3 then
+    FEffectsManager.AddShockwave(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z, Scale * 50);
+  
+  // Desenhar múltiplas partículas de explosão
+  FSpriteManager.DrawAnimatedSprite(stExplosionParticle, Center.X, Center.Y, Frame, Scale, 0, Alpha);
+  FSpriteManager.DrawAnimatedSprite(stExplosionParticle, Center.X - 10, Center.Y - 10, Frame + 90, Scale * 0.8, 45, Alpha);
+  FSpriteManager.DrawAnimatedSprite(stExplosionParticle, Center.X + 10, Center.Y + 10, Frame + 180, Scale * 0.6, 90, Alpha);
 end;
 
 procedure TRenderer3D.RenderStars(Stars: TGameObjectList<TStar>);
@@ -389,12 +464,13 @@ var
   i: Integer;
   Center: TPoint;
   Star: TStar;
+  Scale: Single;
+  Alpha: Byte;
 begin
-  FCanvas.Pen.Color := clWhite;
-  FCanvas.Pen.Width := 1;
-  FCanvas.Brush.Color := clWhite;
-  FCanvas.Brush.Style := bsSolid;
+  // Desenhar fundo de campo de estrelas primeiro
+  FSpriteManager.DrawSprite(stStarfieldBg, FWidth div 2, FHeight div 2, 1.0, 0, 128);
   
+  // Desenhar estrelas individuais com brilho
   for i := 0 to Stars.Count - 1 do
   begin
     Star := Stars[i];
@@ -402,8 +478,36 @@ begin
     if (Center.X >= 0) and (Center.X < FWidth) and 
        (Center.Y >= 0) and (Center.Y < FHeight) then
     begin
-      FCanvas.Ellipse(Center.X - 1, Center.Y - 1,
-                      Center.X + 1, Center.Y + 1);
+      // Escala baseada na distância Z
+      Scale := 0.1 + (Star.Position.Z / 50.0);
+      Scale := Max(0.05, Min(0.3, Scale));
+      
+      // Alpha baseado na distância para efeito de profundidade
+      Alpha := Round(255 * Scale / 0.3);
+      Alpha := Max(100, Min(255, Alpha));
+      
+      // Desenhar estrela com brilho
+      FCanvas.Pen.Color := RGB(255, 255, 200 + Random(55));
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Color := FCanvas.Pen.Color;
+      FCanvas.Brush.Style := bsSolid;
+      
+      // Estrela principal
+      FCanvas.Ellipse(Center.X - Round(Scale * 10), Center.Y - Round(Scale * 10),
+                      Center.X + Round(Scale * 10), Center.Y + Round(Scale * 10));
+      
+      // Efeito de brilho ocasional
+      if Random(10) = 0 then
+      begin
+        FCanvas.Pen.Color := RGB(255, 255, 255);
+        FCanvas.MoveTo(Center.X - Round(Scale * 15), Center.Y);
+        FCanvas.LineTo(Center.X + Round(Scale * 15), Center.Y);
+        FCanvas.MoveTo(Center.X, Center.Y - Round(Scale * 15));
+        FCanvas.LineTo(Center.X, Center.Y + Round(Scale * 15));
+        
+        // Adicionar efeito de cintilação com partículas
+        FEffectsManager.AddStarTwinkle(Star.Position.X, Star.Position.Y, Star.Position.Z);
+      end;
     end;
   end;
 end;

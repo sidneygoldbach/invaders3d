@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradientes para efeito de energia -->
+    <linearGradient id="laserCoreGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset="20%" stop-color="#AAFFFF" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#00FFFF" stop-opacity="1"/>
+      <stop offset="80%" stop-color="#0088FF" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#0044AA" stop-opacity="1"/>
+    </linearGradient>
+    
+    <linearGradient id="laserOuterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#AAFFFF" stop-opacity="0.8"/>
+      <stop offset="30%" stop-color="#44AAFF" stop-opacity="0.6"/>
+      <stop offset="70%" stop-color="#0066CC" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#003388" stop-opacity="0.2"/>
+    </linearGradient>
+    
+    <radialGradient id="energyBallGrad" cx="0.5" cy="0.5" r="0.8">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset="30%" stop-color="#AAFFFF" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#00AAFF" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0066AA" stop-opacity="0.4"/>
+    </radialGradient>
+    
+    <radialGradient id="sparkGrad" cx="0.5" cy="0.5" r="0.9">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#FFFF00" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#FF8800" stop-opacity="0.3"/>
+    </radialGradient>
+    
+    <!-- Filtros para brilho intenso -->
+    <filter id="intensGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="energyGlow" x="-150%" y="-150%" width="400%" height="400%">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="sparkleGlow" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Halo externo do laser -->
+  <rect x="58" y="10" width="12" height="108" rx="6" fill="url(#laserOuterGrad)" filter="url(#energyGlow)"/>
+  
+  <!-- Camada média do laser -->
+  <rect x="60" y="15" width="8" height="98" rx="4" fill="url(#laserOuterGrad)" filter="url(#intensGlow)" opacity="0.8"/>
+  
+  <!-- Núcleo principal do laser -->
+  <rect x="62" y="20" width="4" height="88" rx="2" fill="url(#laserCoreGrad)" filter="url(#intensGlow)"/>
+  
+  <!-- Núcleo interno super brilhante -->
+  <rect x="63" y="25" width="2" height="78" rx="1" fill="#FFFFFF" filter="url(#intensGlow)"/>
+  
+  <!-- Esferas de energia ao longo do laser -->
+  <circle cx="64" cy="30" r="4" fill="url(#energyBallGrad)" filter="url(#energyGlow)"/>
+  <circle cx="64" cy="50" r="3" fill="url(#energyBallGrad)" filter="url(#energyGlow)"/>
+  <circle cx="64" cy="70" r="4" fill="url(#energyBallGrad)" filter="url(#energyGlow)"/>
+  <circle cx="64" cy="90" r="3" fill="url(#energyBallGrad)" filter="url(#energyGlow)"/>
+  
+  <!-- Núcleos das esferas de energia -->
+  <circle cx="64" cy="30" r="2" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="64" cy="50" r="1.5" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="64" cy="70" r="2" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="64" cy="90" r="1.5" fill="#FFFFFF" opacity="0.9"/>
+  
+  <!-- Faíscas e partículas de energia -->
+  <circle cx="55" cy="35" r="1" fill="url(#sparkGrad)" filter="url(#sparkleGlow)"/>
+  <circle cx="73" cy="42" r="0.8" fill="url(#sparkGrad)" filter="url(#sparkleGlow)"/>
+  <circle cx="57" cy="58" r="1.2" fill="url(#sparkGrad)" filter="url(#sparkleGlow)"/>
+  <circle cx="71" cy="65" r="0.9" fill="url(#sparkGrad)" filter="url(#sparkleGlow)"/>
+  <circle cx="56" cy="78" r="1.1" fill="url(#sparkGrad)" filter="url(#sparkleGlow)"/>
+  <circle cx="72" cy="85" r="0.7" fill="url(#sparkGrad)" filter="url(#sparkleGlow)"/>
+  
+  <!-- Ondas de energia laterais -->
+  <ellipse cx="50" cy="40" rx="3" ry="8" fill="#00AAFF" opacity="0.4" filter="url(#intensGlow)"/>
+  <ellipse cx="78" cy="60" rx="3" ry="8" fill="#00AAFF" opacity="0.4" filter="url(#intensGlow)"/>
+  <ellipse cx="52" cy="80" rx="2" ry="6" fill="#00AAFF" opacity="0.4" filter="url(#intensGlow)"/>
+  <ellipse cx="76" cy="45" rx="2" ry="6" fill="#00AAFF" opacity="0.4" filter="url(#intensGlow)"/>
+  
+  <!-- Distorções de energia -->
+  <path d="M 60 25 Q 68 28 62 32 Q 56 35 64 38 Q 72 41 60 44" 
+        stroke="#AAFFFF" stroke-width="1" fill="none" opacity="0.6" filter="url(#intensGlow)"/>
+  <path d="M 68 55 Q 60 58 66 62 Q 72 65 64 68 Q 56 71 68 74" 
+        stroke="#AAFFFF" stroke-width="1" fill="none" opacity="0.6" filter="url(#intensGlow)"/>
+  
+  <!-- Ponta superior do laser (origem) -->
+  <circle cx="64" cy="15" r="6" fill="url(#energyBallGrad)" filter="url(#energyGlow)"/>
+  <circle cx="64" cy="15" r="3" fill="#FFFFFF" opacity="0.9"/>
+  <circle cx="64" cy="15" r="1" fill="#FFFFFF"/>
+  
+  <!-- Ponta inferior do laser (impacto) -->
+  <circle cx="64" cy="113" r="8" fill="url(#energyBallGrad)" filter="url(#energyGlow)"/>
+  <circle cx="64" cy="113" r="4" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="64" cy="113" r="2" fill="#FFFFFF"/>
+  
+  <!-- Rastros de energia -->
+  <rect x="61" y="10" width="1" height="108" fill="#FFFFFF" opacity="0.8"/>
+  <rect x="66" y="10" width="1" height="108" fill="#FFFFFF" opacity="0.8"/>
+  
+  <!-- Pulsos de energia adicionais -->
+  <ellipse cx="64" cy="25" rx="8" ry="2" fill="#00AAFF" opacity="0.3" filter="url(#intensGlow)"/>
+  <ellipse cx="64" cy="45" rx="6" ry="2" fill="#00AAFF" opacity="0.3" filter="url(#intensGlow)"/>
+  <ellipse cx="64" cy="65" rx="8" ry="2" fill="#00AAFF" opacity="0.3" filter="url(#intensGlow)"/>
+  <ellipse cx="64" cy="85" rx="6" ry="2" fill="#00AAFF" opacity="0.3" filter="url(#intensGlow)"/>
+  <ellipse cx="64" cy="105" rx="10" ry="3" fill="#00AAFF" opacity="0.4" filter="url(#intensGlow)"/>
+</svg>

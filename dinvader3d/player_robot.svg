@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradientes para efeito 3D esférico -->
+    <radialGradient id="robotBodyGrad" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#00FFFF" stop-opacity="1"/>
+      <stop offset="30%" stop-color="#0080FF" stop-opacity="1"/>
+      <stop offset="70%" stop-color="#0040AA" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#001155" stop-opacity="1"/>
+    </radialGradient>
+    
+    <radialGradient id="robotHeadGrad" cx="0.25" cy="0.25" r="0.9">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="20%" stop-color="#00DDFF" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#0066CC" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#002266" stop-opacity="1"/>
+    </radialGradient>
+    
+    <radialGradient id="neonGlow" cx="0.5" cy="0.5" r="0.6">
+      <stop offset="0%" stop-color="#00FFFF" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#0080FF" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0040AA" stop-opacity="0.3"/>
+    </radialGradient>
+    
+    <radialGradient id="jetGrad" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#FFFF00" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#FF8800" stop-opacity="1"/>
+      <stop offset="80%" stop-color="#FF4400" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#AA0000" stop-opacity="1"/>
+    </radialGradient>
+    
+    <!-- Filtros para brilho e sombra -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="innerShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feOffset dx="2" dy="2"/>
+      <feGaussianBlur stdDeviation="1" result="offset-blur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.3"/>
+      <feComposite in2="offset-blur" operator="in"/>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Jatos propulsores (atrás) -->
+  <ellipse cx="45" cy="100" rx="8" ry="15" fill="url(#jetGrad)" filter="url(#glow)" opacity="0.9"/>
+  <ellipse cx="83" cy="100" rx="8" ry="15" fill="url(#jetGrad)" filter="url(#glow)" opacity="0.9"/>
+  
+  <!-- Corpo principal do robô -->
+  <ellipse cx="64" cy="75" rx="35" ry="40" fill="url(#robotBodyGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Detalhes neon no corpo -->
+  <rect x="50" y="60" width="28" height="4" rx="2" fill="url(#neonGlow)" filter="url(#glow)"/>
+  <rect x="50" y="70" width="28" height="4" rx="2" fill="url(#neonGlow)" filter="url(#glow)"/>
+  <rect x="50" y="80" width="28" height="4" rx="2" fill="url(#neonGlow)" filter="url(#glow)"/>
+  
+  <!-- Cabeça/Capacete -->
+  <ellipse cx="64" cy="40" rx="25" ry="28" fill="url(#robotHeadGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Visor transparente -->
+  <ellipse cx="64" cy="38" rx="18" ry="20" fill="#00FFFF" opacity="0.4" filter="url(#glow)"/>
+  <ellipse cx="64" cy="38" rx="15" ry="17" fill="#FFFFFF" opacity="0.2"/>
+  
+  <!-- Olhos do robô -->
+  <circle cx="58" cy="35" r="4" fill="#FF0000" filter="url(#glow)"/>
+  <circle cx="70" cy="35" r="4" fill="#FF0000" filter="url(#glow)"/>
+  
+  <!-- Braços robóticos -->
+  <ellipse cx="25" cy="65" rx="12" ry="25" fill="url(#robotBodyGrad)" filter="url(#innerShadow)"/>
+  <ellipse cx="103" cy="65" rx="12" ry="25" fill="url(#robotBodyGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Detalhes dos braços -->
+  <rect x="20" y="55" width="10" height="3" rx="1" fill="url(#neonGlow)" filter="url(#glow)"/>
+  <rect x="98" y="55" width="10" height="3" rx="1" fill="url(#neonGlow)" filter="url(#glow)"/>
+  
+  <!-- Pernas robóticas -->
+  <ellipse cx="50" cy="110" rx="10" ry="18" fill="url(#robotBodyGrad)" filter="url(#innerShadow)"/>
+  <ellipse cx="78" cy="110" rx="10" ry="18" fill="url(#robotBodyGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Brilhos especulares para efeito 3D -->
+  <ellipse cx="55" cy="30" rx="8" ry="10" fill="#FFFFFF" opacity="0.6"/>
+  <ellipse cx="55" cy="55" rx="12" ry="15" fill="#FFFFFF" opacity="0.4"/>
+  <circle cx="20" cy="55" r="4" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="108" cy="55" r="4" fill="#FFFFFF" opacity="0.5"/>
+</svg>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradientes para efeito 3D esférico -->
+    <radialGradient id="jetBodyGrad" cx="0.3" cy="0.3" r="0.9">
+      <stop offset="0%" stop-color="#DDDDDD" stop-opacity="1"/>
+      <stop offset="30%" stop-color="#999999" stop-opacity="1"/>
+      <stop offset="70%" stop-color="#555555" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#333333" stop-opacity="1"/>
+    </radialGradient>
+    
+    <radialGradient id="jetWingGrad" cx="0.2" cy="0.2" r="0.8">
+      <stop offset="0%" stop-color="#BBBBBB" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#777777" stop-opacity="1"/>
+      <stop offset="80%" stop-color="#444444" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#222222" stop-opacity="1"/>
+    </radialGradient>
+    
+    <radialGradient id="jetEngineGrad" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#FF6600" stop-opacity="1"/>
+      <stop offset="30%" stop-color="#FF4400" stop-opacity="1"/>
+      <stop offset="70%" stop-color="#CC2200" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#880000" stop-opacity="1"/>
+    </radialGradient>
+    
+    <radialGradient id="jetThrusterGrad" cx="0.5" cy="0.3" r="0.9">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset="20%" stop-color="#FFFF00" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#FF6600" stop-opacity="1"/>
+      <stop offset="80%" stop-color="#FF0000" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#CC0000" stop-opacity="0.8"/>
+    </radialGradient>
+    
+    <radialGradient id="cockpitGrad" cx="0.25" cy="0.25" r="0.9">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="30%" stop-color="#AAFFFF" stop-opacity="0.7"/>
+      <stop offset="70%" stop-color="#4488CC" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#224466" stop-opacity="0.3"/>
+    </radialGradient>
+    
+    <!-- Filtros para brilho e sombra -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="innerShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feOffset dx="2" dy="2"/>
+      <feGaussianBlur stdDeviation="2" result="offset-blur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.4"/>
+      <feComposite in2="offset-blur" operator="in"/>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="thrusterGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Asas principais -->
+  <ellipse cx="35" cy="64" rx="25" ry="8" fill="url(#jetWingGrad)" filter="url(#innerShadow)" transform="rotate(-15 35 64)"/>
+  <ellipse cx="93" cy="64" rx="25" ry="8" fill="url(#jetWingGrad)" filter="url(#innerShadow)" transform="rotate(15 93 64)"/>
+  
+  <!-- Detalhes das asas -->
+  <rect x="15" y="60" width="40" height="3" rx="1" fill="#666666" transform="rotate(-15 35 64)"/>
+  <rect x="73" y="60" width="40" height="3" rx="1" fill="#666666" transform="rotate(15 93 64)"/>
+  
+  <!-- Corpo principal da nave -->
+  <ellipse cx="64" cy="64" rx="35" ry="12" fill="url(#jetBodyGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Cockpit/cabine -->
+  <ellipse cx="64" cy="50" rx="18" ry="15" fill="url(#cockpitGrad)" filter="url(#glow)"/>
+  
+  <!-- Iluminação interna do cockpit -->
+  <ellipse cx="64" cy="48" rx="12" ry="10" fill="#AAFFFF" opacity="0.4"/>
+  <ellipse cx="64" cy="46" rx="8" ry="6" fill="#FFFFFF" opacity="0.5"/>
+  
+  <!-- Nariz da nave -->
+  <ellipse cx="64" cy="35" rx="8" ry="12" fill="url(#jetBodyGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Motores/propulsores traseiros -->
+  <ellipse cx="45" cy="85" rx="8" ry="15" fill="url(#jetEngineGrad)" filter="url(#innerShadow)"/>
+  <ellipse cx="83" cy="85" rx="8" ry="15" fill="url(#jetEngineGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Chamas dos propulsores -->
+  <ellipse cx="45" cy="100" rx="6" ry="20" fill="url(#jetThrusterGrad)" filter="url(#thrusterGlow)"/>
+  <ellipse cx="83" cy="100" rx="6" ry="20" fill="url(#jetThrusterGrad)" filter="url(#thrusterGlow)"/>
+  
+  <!-- Chamas internas mais brilhantes -->
+  <ellipse cx="45" cy="98" rx="3" ry="15" fill="#FFFFFF" opacity="0.8"/>
+  <ellipse cx="83" cy="98" rx="3" ry="15" fill="#FFFFFF" opacity="0.8"/>
+  
+  <!-- Detalhes metálicos do corpo -->
+  <rect x="35" y="58" width="58" height="2" rx="1" fill="#AAAAAA"/>
+  <rect x="40" y="62" width="48" height="2" rx="1" fill="#888888"/>
+  <rect x="45" y="66" width="38" height="2" rx="1" fill="#AAAAAA"/>
+  
+  <!-- Luzes de navegação -->
+  <circle cx="20" cy="64" r="3" fill="#FF0000" filter="url(#glow)"/>
+  <circle cx="108" cy="64" r="3" fill="#00FF00" filter="url(#glow)"/>
+  <circle cx="64" cy="30" r="2" fill="#FFFFFF" filter="url(#glow)"/>
+  
+  <!-- Halos das luzes de navegação -->
+  <circle cx="20" cy="64" r="8" fill="#FF0000" opacity="0.3"/>
+  <circle cx="108" cy="64" r="8" fill="#00FF00" opacity="0.3"/>
+  <circle cx="64" cy="30" r="6" fill="#FFFFFF" opacity="0.3"/>
+  
+  <!-- Brilhos especulares para efeito 3D -->
+  <ellipse cx="55" cy="45" rx="8" ry="12" fill="#FFFFFF" opacity="0.6"/>
+  <ellipse cx="50" cy="58" rx="12" ry="6" fill="#FFFFFF" opacity="0.4"/>
+  <ellipse cx="55" cy="70" rx="15" ry="4" fill="#FFFFFF" opacity="0.3"/>
+  
+  <!-- Detalhes adicionais -->
+  <rect x="58" y="40" width="12" height="8" rx="2" fill="#CCCCCC" filter="url(#innerShadow)"/>
+  <circle cx="64" cy="44" r="3" fill="#FFFFFF" opacity="0.7"/>
+  
+  <!-- Antenas/sensores -->
+  <rect x="63" y="25" width="2" height="8" fill="#AAAAAA"/>
+  <circle cx="64" cy="25" r="2" fill="#FFFF00" filter="url(#glow)"/>
+</svg>

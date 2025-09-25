@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradientes para efeito 3D esférico -->
+    <radialGradient id="ufoBodyGrad" cx="0.3" cy="0.4" r="0.8">
+      <stop offset="0%" stop-color="#CCCCCC" stop-opacity="1"/>
+      <stop offset="30%" stop-color="#888888" stop-opacity="1"/>
+      <stop offset="70%" stop-color="#444444" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#222222" stop-opacity="1"/>
+    </radialGradient>
+    
+    <radialGradient id="ufoDomeGrad" cx="0.25" cy="0.25" r="0.9">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="20%" stop-color="#AAFFFF" stop-opacity="0.8"/>
+      <stop offset="60%" stop-color="#4488CC" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#224466" stop-opacity="0.4"/>
+    </radialGradient>
+    
+    <radialGradient id="ufoRingGrad" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" stop-color="#FFFF88" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#CCCC44" stop-opacity="1"/>
+      <stop offset="80%" stop-color="#888822" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#444411" stop-opacity="1"/>
+    </radialGradient>
+    
+    <radialGradient id="lightGrad1" cx="0.5" cy="0.5" r="0.8">
+      <stop offset="0%" stop-color="#FF0000" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#FF4444" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#AA0000" stop-opacity="0.3"/>
+    </radialGradient>
+    
+    <radialGradient id="lightGrad2" cx="0.5" cy="0.5" r="0.8">
+      <stop offset="0%" stop-color="#00FF00" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#44FF44" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#00AA00" stop-opacity="0.3"/>
+    </radialGradient>
+    
+    <radialGradient id="lightGrad3" cx="0.5" cy="0.5" r="0.8">
+      <stop offset="0%" stop-color="#0000FF" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#4444FF" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0000AA" stop-opacity="0.3"/>
+    </radialGradient>
+    
+    <!-- Filtros para brilho e sombra -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="innerShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feOffset dx="2" dy="2"/>
+      <feGaussianBlur stdDeviation="2" result="offset-blur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.4"/>
+      <feComposite in2="offset-blur" operator="in"/>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Base inferior do UFO -->
+  <ellipse cx="64" cy="85" rx="45" ry="15" fill="url(#ufoBodyGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Detalhes tecnológicos na base -->
+  <rect x="30" y="82" width="68" height="3" rx="1" fill="#666666"/>
+  <rect x="35" y="87" width="58" height="2" rx="1" fill="#444444"/>
+  
+  <!-- Corpo principal (anel metálico) -->
+  <ellipse cx="64" cy="70" rx="50" ry="20" fill="url(#ufoRingGrad)" filter="url(#innerShadow)"/>
+  
+  <!-- Anel interno -->
+  <ellipse cx="64" cy="70" rx="40" ry="15" fill="url(#ufoBodyGrad)"/>
+  
+  <!-- Cúpula superior cristalina -->
+  <ellipse cx="64" cy="50" rx="35" ry="30" fill="url(#ufoDomeGrad)" filter="url(#glow)"/>
+  
+  <!-- Iluminação interna da cúpula -->
+  <ellipse cx="64" cy="48" rx="25" ry="22" fill="#AAFFFF" opacity="0.3" filter="url(#glow)"/>
+  <ellipse cx="64" cy="46" rx="15" ry="14" fill="#FFFFFF" opacity="0.4"/>
+  
+  <!-- Luzes rotativas coloridas na borda -->
+  <circle cx="25" cy="70" r="6" fill="url(#lightGrad1)" filter="url(#glow)"/>
+  <circle cx="45" cy="58" r="6" fill="url(#lightGrad2)" filter="url(#glow)"/>
+  <circle cx="83" cy="58" r="6" fill="url(#lightGrad3)" filter="url(#glow)"/>
+  <circle cx="103" cy="70" r="6" fill="url(#lightGrad1)" filter="url(#glow)"/>
+  <circle cx="83" cy="82" r="6" fill="url(#lightGrad2)" filter="url(#glow)"/>
+  <circle cx="45" cy="82" r="6" fill="url(#lightGrad3)" filter="url(#glow)"/>
+  
+  <!-- Halos das luzes -->
+  <circle cx="25" cy="70" r="12" fill="#FF0000" opacity="0.2" filter="url(#glow)"/>
+  <circle cx="45" cy="58" r="12" fill="#00FF00" opacity="0.2" filter="url(#glow)"/>
+  <circle cx="83" cy="58" r="12" fill="#0000FF" opacity="0.2" filter="url(#glow)"/>
+  <circle cx="103" cy="70" r="12" fill="#FF0000" opacity="0.2" filter="url(#glow)"/>
+  <circle cx="83" cy="82" r="12" fill="#00FF00" opacity="0.2" filter="url(#glow)"/>
+  <circle cx="45" cy="82" r="12" fill="#0000FF" opacity="0.2" filter="url(#glow)"/>
+  
+  <!-- Brilhos especulares para efeito 3D -->
+  <ellipse cx="50" cy="40" rx="12" ry="15" fill="#FFFFFF" opacity="0.6"/>
+  <ellipse cx="45" cy="60" rx="15" ry="8" fill="#FFFFFF" opacity="0.3"/>
+  <ellipse cx="50" cy="78" rx="20" ry="5" fill="#FFFFFF" opacity="0.4"/>
+  
+  <!-- Detalhes metálicos -->
+  <rect x="20" y="68" width="88" height="4" rx="2" fill="#AAAAAA" opacity="0.8"/>
+  <circle cx="64" cy="70" r="8" fill="#CCCCCC" filter="url(#innerShadow)"/>
+  <circle cx="64" cy="70" r="4" fill="#FFFFFF" opacity="0.6"/>
+</svg>
