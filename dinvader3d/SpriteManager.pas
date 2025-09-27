@@ -258,14 +258,13 @@ var
   finalR, finalG, finalB: Byte;
   blend: Single;
   pixelColor: TColor;
-  scanLine: PByteArray;
 begin
+  // Limpar bitmap com fundo transparente
   Bitmap.Canvas.Brush.Color := clBlack;
   Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
   
   for j := 0 to Bitmap.Height - 1 do
   begin
-    scanLine := Bitmap.ScanLine[j];
     for i := 0 to Bitmap.Width - 1 do
     begin
       dx := i - X;
@@ -332,11 +331,8 @@ begin
         
         pixelColor := RGB(finalR, finalG, finalB);
         
-        // Definir pixel (formato BGRA)
-        scanLine[i * 4] := GetBValue(pixelColor);     // B
-        scanLine[i * 4 + 1] := GetGValue(pixelColor); // G
-        scanLine[i * 4 + 2] := GetRValue(pixelColor); // R
-        scanLine[i * 4 + 3] := 255;                   // A
+        // Definir pixel usando Canvas.Pixels (mais compatível)
+        Bitmap.Canvas.Pixels[i, j] := pixelColor;
       end;
     end;
   end;
