@@ -11,7 +11,7 @@ uses
   EffectsManager in 'EffectsManager.pas';
 
 {$R *.res}
-// {$R sprites.res}  // Comentado temporariamente até compilar o arquivo de recursos
+{$R sprites.res}
 
 begin
   Application.Initialize;

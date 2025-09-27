@@ -25,7 +25,7 @@ type
     FLoaded: Boolean;
     
     function LoadSpriteFromResource(const ResourceName: string): TBitmap;
-    function SVGToBitmap(const SVGData: string; Width, Height: Integer): TBitmap;
+    function SVGToBitmap(const SVGData: string; Width, Height: Integer; const ResourceName: string): TBitmap;
     procedure CreateGradientBitmap(Bitmap: TBitmap; const Colors: array of TColor; 
       CenterX, CenterY, Radius: Integer);
     procedure Draw3DSphere(Bitmap: TBitmap; X, Y, Radius: Integer; 
@@ -102,7 +102,7 @@ begin
         SVGData := StringList.Text;
         
         // Converter SVG para bitmap (implementação simplificada)
-        Result := SVGToBitmap(SVGData, 128, 128);
+        Result := SVGToBitmap(SVGData, 128, 128, ResourceName);
         
       finally
         StringList.Free;
@@ -192,7 +192,7 @@ begin
   end;
 end;
 
-function TSpriteManager.SVGToBitmap(const SVGData: string; Width, Height: Integer): TBitmap;
+function TSpriteManager.SVGToBitmap(const SVGData: string; Width, Height: Integer; const ResourceName: string): TBitmap;
 var
   i, j: Integer;
   centerX, centerY: Integer;
@@ -211,38 +211,38 @@ begin
   centerX := Width div 2;
   centerY := Height div 2;
   
-  // Analisar o SVG e criar sprite 3D correspondente baseado no conteúdo
-  if Pos('player_robot', SVGData) > 0 then
+  // Analisar o ResourceName e criar sprite 3D correspondente
+  if ResourceName = 'PLAYER_ROBOT' then
   begin
     // Criar robô 3D detalhado
     CreateRobot3D(Result, centerX, centerY);
   end
-  else if Pos('ufo_classic', SVGData) > 0 then
+  else if ResourceName = 'UFO_CLASSIC' then
   begin
     // Criar UFO 3D detalhado
     CreateUFO3D(Result, centerX, centerY);
   end
-  else if Pos('fighter_jet', SVGData) > 0 then
+  else if ResourceName = 'FIGHTER_JET' then
   begin
     // Criar jato 3D detalhado
     CreateFighterJet3D(Result, centerX, centerY);
   end
-  else if Pos('paratrooper', SVGData) > 0 then
+  else if ResourceName = 'PARATROOPER' then
   begin
     // Criar paraquedista 3D detalhado
     CreateParatrooper3D(Result, centerX, centerY);
   end
-  else if Pos('laser_beam', SVGData) > 0 then
+  else if ResourceName = 'LASER_BEAM' then
   begin
     // Criar laser 3D detalhado
     CreateLaserBeam3D(Result, centerX, centerY);
   end
-  else if Pos('explosion_particle', SVGData) > 0 then
+  else if ResourceName = 'EXPLOSION_PARTICLE' then
   begin
     // Criar explosão 3D detalhada
     CreateExplosion3D(Result, centerX, centerY);
   end
-  else if Pos('starfield_bg', SVGData) > 0 then
+  else if ResourceName = 'STARFIELD_BG' then
   begin
     // Criar campo de estrelas 3D
     CreateStarfield3D(Result);
