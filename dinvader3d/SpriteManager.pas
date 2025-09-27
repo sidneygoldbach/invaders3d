@@ -248,7 +248,7 @@ begin
 end;
 
 procedure TSpriteManager.Draw3DSphere(Bitmap: TBitmap; X, Y, Radius: Integer; 
-  const Colors: array of TColor);
+  const Colors: array of TColor; ClearBackground: Boolean = True);
 var
   i, j: Integer;
   dx, dy, distance: Single;
@@ -258,10 +258,16 @@ var
   finalR, finalG, finalB: Byte;
   blend: Single;
   pixelColor: TColor;
+  highlight: Single;
+  shadow: Single;
+  specular: Single;
 begin
-  // Limpar bitmap com fundo transparente
-  Bitmap.Canvas.Brush.Color := clBlack;
-  Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  // Limpar bitmap apenas se solicitado (primeira chamada)
+  if ClearBackground then
+  begin
+    Bitmap.Canvas.Brush.Color := clBlack;
+    Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  end;
   
   // Usar BeginUpdate/EndUpdate para melhor performance
   Bitmap.Canvas.Lock;
@@ -278,6 +284,20 @@ begin
         begin
           // Calcular iluminação 3D
           normalizedDist := distance / Radius;
+          
+          // Calcular efeitos 3D avançados
+          // Highlight (brilho no topo-esquerda)
+          highlight := Max(0, 1 - Sqrt((dx + Radius * 0.3) * (dx + Radius * 0.3) + 
+                                      (dy + Radius * 0.3) * (dy + Radius * 0.3)) / (Radius * 0.6));
+          
+          // Shadow (sombra no fundo-direita)
+          shadow := Max(0, 1 - Sqrt((dx - Radius * 0.4) * (dx - Radius * 0.4) + 
+                                   (dy - Radius * 0.4) * (dy - Radius * 0.4)) / (Radius * 0.5));
+          
+          // Specular highlight (reflexo especular)
+          specular := Max(0, 1 - Sqrt((dx + Radius * 0.2) * (dx + Radius * 0.2) + 
+                                     (dy + Radius * 0.2) * (dy + Radius * 0.2)) / (Radius * 0.3));
+          specular := Power(specular, 4); // Reflexo mais concentrado
           
           // Determinar cor baseada na distância do centro
           if normalizedDist < 0.25 then
@@ -323,13 +343,29 @@ begin
             finalB := GetBValue(Colors[High(Colors)]);
           end;
           
-          // Aplicar efeito de iluminação 3D
-          if normalizedDist < 0.3 then
+          // Aplicar efeitos 3D
+          // Highlight
+          finalR := Min(255, Round(finalR + highlight * 80));
+          finalG := Min(255, Round(finalG + highlight * 80));
+          finalB := Min(255, Round(finalB + highlight * 80));
+          
+          // Shadow
+          finalR := Max(0, Round(finalR - shadow * 60));
+          finalG := Max(0, Round(finalG - shadow * 60));
+          finalB := Max(0, Round(finalB - shadow * 60));
+          
+          // Specular highlight
+          finalR := Min(255, Round(finalR + specular * 120));
+          finalG := Min(255, Round(finalG + specular * 120));
+          finalB := Min(255, Round(finalB + specular * 120));
+          
+          // Anti-aliasing nas bordas
+          if normalizedDist > 0.85 then
           begin
-            // Brilho especular
-            finalR := Min(255, Round(finalR * 1.5));
-            finalG := Min(255, Round(finalG * 1.5));
-            finalB := Min(255, Round(finalB * 1.5));
+            blend := (1.0 - normalizedDist) / 0.15;
+            finalR := Round(finalR * blend);
+            finalG := Round(finalG * blend);
+            finalB := Round(finalB * blend);
           end;
           
           pixelColor := RGB(finalR, finalG, finalB);
@@ -464,70 +500,84 @@ end;
 
 procedure TSpriteManager.CreateRobot3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
 begin
-  // Limpar bitmap
-  Bitmap.Canvas.Brush.Color := clBlack;
-  Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  // Corpo principal do robô (esfera azul metálica) - limpar fundo na primeira chamada
+  Draw3DSphere(Bitmap, CenterX, CenterY, 35, [$0000AAFF, $000088CC, $00006699, $00004466], True);
   
-  // Corpo principal do robô (esfera azul metálica)
-  Draw3DSphere(Bitmap, CenterX, CenterY + 10, 35, [$00FFFFFF, $00AAAAFF, $004488CC, $00224466]);
+  // Cabeça robótica (menor, acima do corpo) - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX, CenterY - 25, 18, [$00CCCCCC, $00999999, $00666666, $00333333], False);
   
-  // Cabeça do robô (esfera menor)
-  Draw3DSphere(Bitmap, CenterX, CenterY - 25, 20, [$00FFFFFF, $00CCCCFF, $006699DD, $00334477]);
+  // Olhos brilhantes (pequenos pontos vermelhos) - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX - 8, CenterY - 28, 4, [$00FFFFFF, $00FF4444, $00CC0000, $00880000], False);
+  Draw3DSphere(Bitmap, CenterX + 8, CenterY - 28, 4, [$00FFFFFF, $00FF4444, $00CC0000, $00880000], False);
   
-  // Olhos vermelhos brilhantes
-  Draw3DSphere(Bitmap, CenterX - 8, CenterY - 28, 4, [$00FFFFFF, $00FFAAAA, $00FF4444, $00AA0000]);
-  Draw3DSphere(Bitmap, CenterX + 8, CenterY - 28, 4, [$00FFFFFF, $00FFAAAA, $00FF4444, $00AA0000]);
+  // Braços robóticos (esferas menores nas laterais) - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX - 30, CenterY - 5, 12, [$00888888, $00666666, $00444444, $00222222], False);
+  Draw3DSphere(Bitmap, CenterX + 30, CenterY - 5, 12, [$00888888, $00666666, $00444444, $00222222], False);
   
-  // Braços robóticos
-  Draw3DSphere(Bitmap, CenterX - 40, CenterY, 15, [$00DDDDDD, $00AAAAAA, $00777777, $00444444]);
-  Draw3DSphere(Bitmap, CenterX + 40, CenterY, 15, [$00DDDDDD, $00AAAAAA, $00777777, $00444444]);
+  // Jatos propulsores (esferas alaranjadas embaixo) - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX - 15, CenterY + 35, 8, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400], False);
+  Draw3DSphere(Bitmap, CenterX + 15, CenterY + 35, 8, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400], False);
   
-  // Jatos propulsores (efeito de fogo)
-  Draw3DSphere(Bitmap, CenterX - 15, CenterY + 45, 8, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400]);
-  Draw3DSphere(Bitmap, CenterX + 15, CenterY + 45, 8, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400]);
+  // Antena no topo da cabeça - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX, CenterY - 40, 3, [$00FFFFFF, $00AAAAAA, $00666666, $00333333], False);
+  
+  // Detalhes no peito (luzes de status) - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX - 8, CenterY - 8, 3, [$00FFFFFF, $0000FF00, $0000AA00, $00006600], False);
+  Draw3DSphere(Bitmap, CenterX + 8, CenterY - 8, 3, [$00FFFFFF, $0000FF00, $0000AA00, $00006600], False);
 end;
 
 procedure TSpriteManager.CreateUFO3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
 begin
-  // Limpar bitmap
-  Bitmap.Canvas.Brush.Color := clBlack;
-  Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  // Corpo principal do UFO (disco achatado) - limpar fundo na primeira chamada
+  Draw3DSphere(Bitmap, CenterX, CenterY + 5, 45, [$00CCCCCC, $00888888, $00444444, $00222222], True);
   
-  // Corpo principal do UFO (disco achatado)
-  Draw3DSphere(Bitmap, CenterX, CenterY + 5, 45, [$00CCCCCC, $00888888, $00444444, $00222222]);
+  // Cúpula superior transparente - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX, CenterY - 10, 25, [$00FFFFFF, $00AAFFFF, $004488CC, $00224466], False);
   
-  // Cúpula superior transparente
-  Draw3DSphere(Bitmap, CenterX, CenterY - 10, 25, [$00FFFFFF, $00AAFFFF, $004488CC, $00224466]);
+  // Luzes coloridas ao redor do disco (mais brilhantes) - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX - 35, CenterY + 5, 8, [$00FFFFFF, $00FF6666, $00CC0000, $00880000], False);
+  Draw3DSphere(Bitmap, CenterX - 12, CenterY + 15, 8, [$00FFFFFF, $0066FF66, $0000CC00, $00008800], False);
+  Draw3DSphere(Bitmap, CenterX + 12, CenterY + 15, 8, [$00FFFFFF, $006666FF, $000000CC, $00000088], False);
+  Draw3DSphere(Bitmap, CenterX + 35, CenterY + 5, 8, [$00FFFFFF, $00FFFF66, $00CCCC00, $00888800], False);
   
-  // Luzes coloridas ao redor do disco
-  Draw3DSphere(Bitmap, CenterX - 35, CenterY + 5, 6, [$00FFFFFF, $00FF4444, $00AA0000, $00550000]);
-  Draw3DSphere(Bitmap, CenterX - 12, CenterY + 15, 6, [$00FFFFFF, $0044FF44, $0000AA00, $00005500]);
-  Draw3DSphere(Bitmap, CenterX + 12, CenterY + 15, 6, [$00FFFFFF, $004444FF, $000000AA, $00000055]);
-  Draw3DSphere(Bitmap, CenterX + 35, CenterY + 5, 6, [$00FFFFFF, $00FFFF44, $00AAAA00, $00555500]);
+  // Raio trator (opcional) - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX, CenterY + 35, 15, [$00FFFFFF, $00AAFFFF, $0044AAFF, $00226688], False);
   
-  // Raio trator (opcional)
-  Draw3DSphere(Bitmap, CenterX, CenterY + 35, 12, [$00FFFFFF, $00AAFFFF, $0044AAFF, $00226688]);
+  // Detalhes adicionais no disco
+  Draw3DSphere(Bitmap, CenterX - 20, CenterY + 8, 4, [$00FFFFFF, $00CCCCCC, $00888888, $00444444], False);
+  Draw3DSphere(Bitmap, CenterX + 20, CenterY + 8, 4, [$00FFFFFF, $00CCCCCC, $00888888, $00444444], False);
+  
+  // Antenas pequenas na cúpula
+  Draw3DSphere(Bitmap, CenterX - 10, CenterY - 20, 2, [$00FFFFFF, $00AAAAAA, $00666666, $00333333], False);
+  Draw3DSphere(Bitmap, CenterX + 10, CenterY - 20, 2, [$00FFFFFF, $00AAAAAA, $00666666, $00333333], False);
 end;
 
 procedure TSpriteManager.CreateFighterJet3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
 begin
-  // Limpar bitmap
-  Bitmap.Canvas.Brush.Color := clBlack;
-  Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
+  // Fuselagem principal - limpar fundo na primeira chamada
+  Draw3DSphere(Bitmap, CenterX, CenterY, 30, [$00DDDDDD, $00999999, $00555555, $00333333], True);
   
-  // Fuselagem principal
-  Draw3DSphere(Bitmap, CenterX, CenterY, 30, [$00DDDDDD, $00999999, $00555555, $00333333]);
+  // Cockpit (vidro azulado) - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX, CenterY - 15, 18, [$00FFFFFF, $00AAFFFF, $0066AADD, $00335577], False);
   
-  // Cockpit
-  Draw3DSphere(Bitmap, CenterX, CenterY - 15, 18, [$00FFFFFF, $00AAFFFF, $0066AADD, $00335577]);
+  // Asas laterais - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX - 35, CenterY + 10, 20, [$00BBBBBB, $00888888, $00444444, $00222222], False);
+  Draw3DSphere(Bitmap, CenterX + 35, CenterY + 10, 20, [$00BBBBBB, $00888888, $00444444, $00222222], False);
   
-  // Asas
-  Draw3DSphere(Bitmap, CenterX - 35, CenterY + 10, 20, [$00BBBBBB, $00888888, $00444444, $00222222]);
-  Draw3DSphere(Bitmap, CenterX + 35, CenterY + 10, 20, [$00BBBBBB, $00888888, $00444444, $00222222]);
+  // Motores/Jatos (chamas) - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX - 20, CenterY + 35, 10, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400], False);
+  Draw3DSphere(Bitmap, CenterX + 20, CenterY + 35, 10, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400], False);
   
-  // Motores/Jatos
-  Draw3DSphere(Bitmap, CenterX - 20, CenterY + 35, 10, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400]);
-  Draw3DSphere(Bitmap, CenterX + 20, CenterY + 35, 10, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400]);
+  // Nariz pontudo - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX, CenterY - 35, 8, [$00AAAAAA, $00777777, $00444444, $00222222], False);
+  
+  // Luzes de navegação - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX - 40, CenterY + 5, 3, [$00FFFFFF, $00FF0000, $00AA0000, $00660000], False);
+  Draw3DSphere(Bitmap, CenterX + 40, CenterY + 5, 3, [$00FFFFFF, $0000FF00, $0000AA00, $00006600], False);
+  
+  // Armamentos nas asas - não limpar fundo
+  Draw3DSphere(Bitmap, CenterX - 25, CenterY + 15, 4, [$00666666, $00444444, $00222222, $00111111], False);
+  Draw3DSphere(Bitmap, CenterX + 25, CenterY + 15, 4, [$00666666, $00444444, $00222222, $00111111], False);
 end;
 
 procedure TSpriteManager.CreateParatrooper3D(Bitmap: TBitmap; CenterX, CenterY: Integer);
