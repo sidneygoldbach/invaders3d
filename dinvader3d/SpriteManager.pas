@@ -263,78 +263,84 @@ begin
   Bitmap.Canvas.Brush.Color := clBlack;
   Bitmap.Canvas.FillRect(Rect(0, 0, Bitmap.Width, Bitmap.Height));
   
-  for j := 0 to Bitmap.Height - 1 do
-  begin
-    for i := 0 to Bitmap.Width - 1 do
+  // Usar BeginUpdate/EndUpdate para melhor performance
+  Bitmap.Canvas.Lock;
+  try
+    for j := 0 to Bitmap.Height - 1 do
     begin
-      dx := i - X;
-      dy := j - Y;
-      distance := Sqrt(dx * dx + dy * dy);
-      
-      if distance <= Radius then
+      for i := 0 to Bitmap.Width - 1 do
       begin
-        // Calcular iluminação 3D
-        normalizedDist := distance / Radius;
+        dx := i - X;
+        dy := j - Y;
+        distance := Sqrt(dx * dx + dy * dy);
         
-        // Determinar cor baseada na distância do centro
-        if normalizedDist < 0.25 then
+        if distance <= Radius then
         begin
-          colorIndex := 0;
-          blend := normalizedDist * 4;
-        end
-        else if normalizedDist < 0.5 then
-        begin
-          colorIndex := 1;
-          blend := (normalizedDist - 0.25) * 4;
-        end
-        else if normalizedDist < 0.75 then
-        begin
-          colorIndex := 2;
-          blend := (normalizedDist - 0.5) * 4;
-        end
-        else
-        begin
-          colorIndex := 3;
-          blend := (normalizedDist - 0.75) * 4;
-        end;
-        
-        // Interpolar entre cores
-        if colorIndex < High(Colors) then
-        begin
-          r1 := GetRValue(Colors[colorIndex]);
-          g1 := GetGValue(Colors[colorIndex]);
-          b1 := GetBValue(Colors[colorIndex]);
+          // Calcular iluminação 3D
+          normalizedDist := distance / Radius;
           
-          r2 := GetRValue(Colors[colorIndex + 1]);
-          g2 := GetGValue(Colors[colorIndex + 1]);
-          b2 := GetBValue(Colors[colorIndex + 1]);
+          // Determinar cor baseada na distância do centro
+          if normalizedDist < 0.25 then
+          begin
+            colorIndex := 0;
+            blend := normalizedDist * 4;
+          end
+          else if normalizedDist < 0.5 then
+          begin
+            colorIndex := 1;
+            blend := (normalizedDist - 0.25) * 4;
+          end
+          else if normalizedDist < 0.75 then
+          begin
+            colorIndex := 2;
+            blend := (normalizedDist - 0.5) * 4;
+          end
+          else
+          begin
+            colorIndex := 3;
+            blend := (normalizedDist - 0.75) * 4;
+          end;
           
-          finalR := Round(r1 + (r2 - r1) * blend);
-          finalG := Round(g1 + (g2 - g1) * blend);
-          finalB := Round(b1 + (b2 - b1) * blend);
-        end
-        else
-        begin
-          finalR := GetRValue(Colors[High(Colors)]);
-          finalG := GetGValue(Colors[High(Colors)]);
-          finalB := GetBValue(Colors[High(Colors)]);
+          // Interpolar entre cores
+          if colorIndex < High(Colors) then
+          begin
+            r1 := GetRValue(Colors[colorIndex]);
+            g1 := GetGValue(Colors[colorIndex]);
+            b1 := GetBValue(Colors[colorIndex]);
+            
+            r2 := GetRValue(Colors[colorIndex + 1]);
+            g2 := GetGValue(Colors[colorIndex + 1]);
+            b2 := GetBValue(Colors[colorIndex + 1]);
+            
+            finalR := Round(r1 + (r2 - r1) * blend);
+            finalG := Round(g1 + (g2 - g1) * blend);
+            finalB := Round(b1 + (b2 - b1) * blend);
+          end
+          else
+          begin
+            finalR := GetRValue(Colors[High(Colors)]);
+            finalG := GetGValue(Colors[High(Colors)]);
+            finalB := GetBValue(Colors[High(Colors)]);
+          end;
+          
+          // Aplicar efeito de iluminação 3D
+          if normalizedDist < 0.3 then
+          begin
+            // Brilho especular
+            finalR := Min(255, Round(finalR * 1.5));
+            finalG := Min(255, Round(finalG * 1.5));
+            finalB := Min(255, Round(finalB * 1.5));
+          end;
+          
+          pixelColor := RGB(finalR, finalG, finalB);
+          
+          // Definir pixel usando Canvas.Pixels com Lock/Unlock
+          Bitmap.Canvas.Pixels[i, j] := pixelColor;
         end;
-        
-        // Aplicar efeito de iluminação 3D
-        if normalizedDist < 0.3 then
-        begin
-          // Brilho especular
-          finalR := Min(255, Round(finalR * 1.5));
-          finalG := Min(255, Round(finalG * 1.5));
-          finalB := Min(255, Round(finalB * 1.5));
-        end;
-        
-        pixelColor := RGB(finalR, finalG, finalB);
-        
-        // Definir pixel usando Canvas.Pixels (mais compatível)
-        Bitmap.Canvas.Pixels[i, j] := pixelColor;
       end;
     end;
+  finally
+    Bitmap.Canvas.Unlock;
   end;
 end;
 
