@@ -140,7 +140,7 @@ begin
           try
             StringList.LoadFromFile(SVGFileName);
             SVGData := StringList.Text;
-            Result := SVGToBitmap(SVGData, 128, 128);
+            Result := SVGToBitmap(SVGData, 128, 128, ResourceName);
           finally
             StringList.Free;
           end;
