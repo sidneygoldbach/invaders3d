@@ -101,7 +101,7 @@ end;
 
 function TRenderer3D.ProjectPoint(const Point3D: TVector3D): TPoint;
 var
-  X, Y, Z, W: Single;
+  X, Y, Z: Single;
   ScreenX, ScreenY: Integer;
 begin
   // Transformar ponto 3D para coordenadas da tela
@@ -358,7 +358,7 @@ begin
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
   // Calcular escala baseada na distância Z
-  Scale := 1.2 + (Airplane.Position.Z / 12.0);
+  Scale := 1.2 + (Enemy.Position.Z / 12.0);
   Scale := Max(0.8, Min(2.5, Scale)); // Limitar escala
   
   // Frame de animação baseado no tempo

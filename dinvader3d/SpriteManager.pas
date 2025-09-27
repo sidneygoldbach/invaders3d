@@ -194,14 +194,7 @@ end;
 
 function TSpriteManager.SVGToBitmap(const SVGData: string; Width, Height: Integer; const ResourceName: string): TBitmap;
 var
-  i, j: Integer;
   centerX, centerY: Integer;
-  distance: Single;
-  pixelColor: TColor;
-  scanLine: PByteArray;
-  normalizedDist: Single;
-  r, g, b: Byte;
-  alpha: Byte;
 begin
   Result := TBitmap.Create;
   Result.Width := Width;
@@ -366,7 +359,6 @@ begin
       if distance <= Radius then
       begin
         colorIndex := Trunc((distance / Radius) * (Length(Colors) - 1));
-        blend := Frac((distance / Radius) * (Length(Colors) - 1));
         
         // Interpolar cores e desenhar pixel
         // Implementação simplificada
@@ -381,7 +373,6 @@ procedure TSpriteManager.DrawGlowEffect(Bitmap: TBitmap; X, Y, Radius: Integer;
 var
   i, j: Integer;
   distance: Single;
-  alpha: Byte;
 begin
   for j := Y - Radius to Y + Radius do
   begin
@@ -393,7 +384,6 @@ begin
         
         if distance <= Radius then
         begin
-          alpha := Round(255 * Intensity * (1 - distance / Radius));
           // Aplicar efeito de brilho (implementação simplificada)
           Bitmap.Canvas.Pixels[i, j] := Color;
         end;
