@@ -317,8 +317,8 @@ begin
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
   // Calcular escala baseada na distância Z
-  Scale := 1.0 + (Player.Position.Z / 10.0);
-  Scale := Max(0.5, Min(2.0, Scale)); // Limitar escala
+  Scale := 1.5 + (Player.Position.Z / 8.0);
+  Scale := Max(1.0, Min(3.0, Scale)); // Limitar escala
   
   // Adicionar efeito de propulsão
   FEffectsManager.AddEngineFlame(Player.Position.X, Player.Position.Y + 15, Player.Position.Z,
@@ -337,8 +337,8 @@ begin
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
   // Calcular escala baseada na distância Z
-  Scale := 0.3 + (Bullet.Position.Z / 20.0);
-  Scale := Max(0.2, Min(0.8, Scale)); // Limitar escala para projéteis
+  Scale := 0.8 + (Bullet.Position.Z / 15.0);
+  Scale := Max(0.5, Min(1.5, Scale)); // Limitar escala para projéteis
   
   // Adicionar rastro de energia
   FEffectsManager.AddLaserTrail(Bullet.Position.X, Bullet.Position.Y, Bullet.Position.Z,
@@ -358,8 +358,8 @@ begin
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
   // Calcular escala baseada na distância Z
-  Scale := 0.8 + (Enemy.Position.Z / 15.0);
-  Scale := Max(0.4, Min(1.5, Scale)); // Limitar escala
+  Scale := 1.2 + (Airplane.Position.Z / 12.0);
+  Scale := Max(0.8, Min(2.5, Scale)); // Limitar escala
   
   // Frame de animação baseado no tempo
   Frame := Round(GetTickCount / 100) mod 360;
@@ -409,8 +409,8 @@ begin
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
   // Calcular escala baseada na distância Z
-  Scale := 0.6 + (Parachutist.Position.Z / 18.0);
-  Scale := Max(0.3, Min(1.2, Scale)); // Limitar escala
+  Scale := 1.0 + (Parachutist.Position.Z / 15.0);
+  Scale := Max(0.6, Min(2.0, Scale)); // Limitar escala
   
   // Frame de animação para movimento do paraquedas
   Frame := Round(GetTickCount / 150) mod 360;

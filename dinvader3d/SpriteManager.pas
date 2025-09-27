@@ -151,19 +151,19 @@ begin
           Result.PixelFormat := pf32bit;
           
           if ResourceName = 'PLAYER_ROBOT' then
-            Draw3DSphere(Result, 64, 64, 30, [$00FFFFFF, $00AAAAFF, $004488CC, $00224466])
+            Draw3DSphere(Result, 64, 64, 50, [$00FFFFFF, $00AAAAFF, $004488CC, $00224466])
           else if ResourceName = 'UFO_CLASSIC' then
-            Draw3DSphere(Result, 64, 64, 35, [$00CCCCCC, $00888888, $00444444, $00222222])
+            Draw3DSphere(Result, 64, 64, 55, [$00CCCCCC, $00888888, $00444444, $00222222])
           else if ResourceName = 'FIGHTER_JET' then
-            Draw3DSphere(Result, 64, 64, 25, [$00DDDDDD, $00999999, $00555555, $00333333])
+            Draw3DSphere(Result, 64, 64, 45, [$00DDDDDD, $00999999, $00555555, $00333333])
           else if ResourceName = 'PARATROOPER' then
-            Draw3DSphere(Result, 64, 64, 20, [$0088AA88, $00556655, $00334433, $00223322])
+            Draw3DSphere(Result, 64, 64, 40, [$0088AA88, $00556655, $00334433, $00223322])
           else if ResourceName = 'LASER_BEAM' then
-            Draw3DSphere(Result, 64, 64, 15, [$00FFFFFF, $00AAFFFF, $0000FFFF, $000088FF])
+            Draw3DSphere(Result, 64, 64, 25, [$00FFFFFF, $00AAFFFF, $0000FFFF, $000088FF])
           else if ResourceName = 'EXPLOSION_PARTICLE' then
-            Draw3DSphere(Result, 64, 64, 40, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400])
+            Draw3DSphere(Result, 64, 64, 60, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400])
           else
-            Draw3DSphere(Result, 64, 64, 32, [$00FFFFFF, $00CCCCCC, $00888888, $00444444]);
+            Draw3DSphere(Result, 64, 64, 50, [$00FFFFFF, $00CCCCCC, $00888888, $00444444]);
         end;
       end
       else
@@ -174,19 +174,19 @@ begin
         Result.PixelFormat := pf32bit;
         
         if ResourceName = 'PLAYER_ROBOT' then
-          Draw3DSphere(Result, 64, 64, 30, [$00FFFFFF, $00AAAAFF, $004488CC, $00224466])
+          Draw3DSphere(Result, 64, 64, 50, [$00FFFFFF, $00AAAAFF, $004488CC, $00224466])
         else if ResourceName = 'UFO_CLASSIC' then
-          Draw3DSphere(Result, 64, 64, 35, [$00CCCCCC, $00888888, $00444444, $00222222])
+          Draw3DSphere(Result, 64, 64, 55, [$00CCCCCC, $00888888, $00444444, $00222222])
         else if ResourceName = 'FIGHTER_JET' then
-          Draw3DSphere(Result, 64, 64, 25, [$00DDDDDD, $00999999, $00555555, $00333333])
+          Draw3DSphere(Result, 64, 64, 45, [$00DDDDDD, $00999999, $00555555, $00333333])
         else if ResourceName = 'PARATROOPER' then
-          Draw3DSphere(Result, 64, 64, 20, [$0088AA88, $00556655, $00334433, $00223322])
+          Draw3DSphere(Result, 64, 64, 40, [$0088AA88, $00556655, $00334433, $00223322])
         else if ResourceName = 'LASER_BEAM' then
-          Draw3DSphere(Result, 64, 64, 15, [$00FFFFFF, $00AAFFFF, $0000FFFF, $000088FF])
+          Draw3DSphere(Result, 64, 64, 25, [$00FFFFFF, $00AAFFFF, $0000FFFF, $000088FF])
         else if ResourceName = 'EXPLOSION_PARTICLE' then
-          Draw3DSphere(Result, 64, 64, 40, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400])
+          Draw3DSphere(Result, 64, 64, 60, [$00FFFFFF, $00FFFF00, $00FF8800, $00FF4400])
         else
-          Draw3DSphere(Result, 64, 64, 32, [$00FFFFFF, $00CCCCCC, $00888888, $00444444]);
+          Draw3DSphere(Result, 64, 64, 50, [$00FFFFFF, $00CCCCCC, $00888888, $00444444]);
       end;
     end;
   end;
@@ -250,7 +250,7 @@ begin
   else
   begin
     // Fallback para esfera genérica
-    Draw3DSphere(Result, centerX, centerY, 32, [$00FFFFFF, $00CCCCCC, $00888888, $00444444]);
+    Draw3DSphere(Result, centerX, centerY, 50, [$00FFFFFF, $00CCCCCC, $00888888, $00444444]);
   end;
 end;
 
