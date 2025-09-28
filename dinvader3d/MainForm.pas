@@ -96,6 +96,22 @@ begin
   
   // Inicializar sistemas
   InitializeGame;
+  
+  // TESTE SIMPLES DE SPRITE - Desenhar sprite de teste na tela
+  if Assigned(FRenderer) and Assigned(FRenderer.SpriteManager) then
+  begin
+    // Limpar o fundo do PaintBox
+    pbGame.Canvas.Brush.Color := clBlack;
+    pbGame.Canvas.FillRect(pbGame.ClientRect);
+    
+    // Desenhar sprite de teste no centro da tela
+    FRenderer.SpriteManager.TestDrawSprite(pbGame.Width div 2 - 32, pbGame.Height div 2 - 32);
+    
+    // Desenhar texto informativo
+    pbGame.Canvas.Font.Color := clWhite;
+    pbGame.Canvas.Font.Size := 12;
+    pbGame.Canvas.TextOut(10, 10, 'TESTE DE SPRITE - Se você vê um quadrado colorido, o sprite está funcionando!');
+  end;
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);

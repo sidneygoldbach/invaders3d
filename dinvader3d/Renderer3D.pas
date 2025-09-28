@@ -43,6 +43,9 @@ type
     procedure RenderExplosion(Explosion: TExplosion);
     procedure RenderStars(Stars: TGameObjectList<TStar>);
     procedure RenderUI(Score, Lives: Integer);
+    
+    // Propriedade para acesso ao SpriteManager
+    property SpriteManager: TSpriteManager read FSpriteManager;
   end;
 
 implementation

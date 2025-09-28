@@ -52,6 +52,9 @@ type
     procedure DrawAnimatedSprite(SpriteType: TSpriteType; X, Y: Integer; 
       Frame: Integer; Scale: Single = 1.0; Rotation: Single = 0.0; Alpha: Byte = 255);
     
+    // Método simples para teste de sprite
+    procedure TestDrawSprite(X, Y: Integer);
+    
     property Canvas: TCanvas read FCanvas write FCanvas;
     property Loaded: Boolean read FLoaded;
   end;
@@ -661,6 +664,58 @@ begin
                                       RGB(brightness div 2, brightness div 2, brightness div 2),
                                       RGB(brightness div 4, brightness div 4, brightness div 4),
                                       RGB(brightness div 8, brightness div 8, brightness div 8)]);
+  end;
+end;
+
+procedure TSpriteManager.TestDrawSprite(X, Y: Integer);
+var
+  TestBitmap: TBitmap;
+  FileStream: TFileStream;
+  SVGText: string;
+  SVGBytes: TBytes;
+begin
+  TestBitmap := TBitmap.Create;
+  try
+    TestBitmap.Width := 64;
+    TestBitmap.Height := 64;
+    TestBitmap.PixelFormat := pf32bit;
+    
+    // Tentar carregar SVG do arquivo
+    try
+      if FileExists('player_robot.svg') then
+      begin
+        FileStream := TFileStream.Create('player_robot.svg', fmOpenRead);
+        try
+          SetLength(SVGBytes, FileStream.Size);
+          FileStream.ReadBuffer(SVGBytes[0], FileStream.Size);
+          SVGText := TEncoding.UTF8.GetString(SVGBytes);
+          
+          // Desenhar um retângulo simples como teste
+          TestBitmap.Canvas.Brush.Color := clLime;
+          TestBitmap.Canvas.FillRect(Rect(10, 10, 54, 54));
+          TestBitmap.Canvas.Brush.Color := clRed;
+          TestBitmap.Canvas.FillRect(Rect(20, 20, 44, 44));
+        finally
+          FileStream.Free;
+        end;
+      end
+      else
+      begin
+        // Se não encontrar arquivo, criar sprite 3D simples
+        CreateRobot3D(TestBitmap, 32, 32);
+      end;
+    except
+      // Em caso de erro, desenhar retângulo colorido
+      TestBitmap.Canvas.Brush.Color := clYellow;
+      TestBitmap.Canvas.FillRect(Rect(0, 0, 64, 64));
+      TestBitmap.Canvas.Brush.Color := clBlue;
+      TestBitmap.Canvas.FillRect(Rect(16, 16, 48, 48));
+    end;
+    
+    // Desenhar o sprite na tela
+    FCanvas.Draw(X, Y, TestBitmap);
+  finally
+    TestBitmap.Free;
   end;
 end;
 
