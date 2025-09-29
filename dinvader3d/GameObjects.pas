@@ -261,12 +261,7 @@ var
   Direction: TVector3D;
   Speed: Single;
 begin
-  if AIsPlayerBullet then
-    inherited Create(APosition, 0.2, clYellow)
-  else
-    inherited Create(APosition, 0.2, clRed);
-    
-  FIsPlayerBullet := AIsPlayerBullet;
+  inherited Create(APosition, AIsPlayerBullet);
   
   if AIsPlayerBullet then
     FVelocity := TVector3D.Create(0, 10, 0)  // Para cima (vertical)
