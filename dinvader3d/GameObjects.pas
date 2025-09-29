@@ -75,6 +75,12 @@ type
     property IsPlayerBullet: Boolean read FIsPlayerBullet;
   end;
 
+  // Projétil com alvo específico
+  TBulletWithTarget = class(TBullet)
+  public
+    constructor Create(APosition: TVector3D; AIsPlayerBullet: Boolean; ATargetPosition: TVector3D);
+  end;
+
   // Inimigo UFO
   TEnemy = class(TGameObject)
   private
@@ -250,6 +256,10 @@ end;
 { TBullet }
 
 constructor TBullet.Create(APosition: TVector3D; AIsPlayerBullet: Boolean);
+var
+  PlayerPos: TVector3D;
+  Direction: TVector3D;
+  Speed: Single;
 begin
   if AIsPlayerBullet then
     inherited Create(APosition, 0.2, clYellow)
@@ -262,12 +272,27 @@ begin
     FVelocity := TVector3D.Create(0, 10, 0)  // Para cima (vertical)
   else
   begin
-    // Balas inimigas vão em direção ao jogador (posição 0, -5, -5)
-    FVelocity := TVector3D.Create(
-      -APosition.X * 0.5,  // Direção X para o centro
-      (-5 - APosition.Y) * 0.5,  // Direção Y para o jogador
-      (-5 - APosition.Z) * 0.5   // Direção Z para o jogador
-    );
+    // Posição do jogador (assumindo que está em 0, -5, -5)
+    PlayerPos := TVector3D.Create(0, -5, -5);
+    
+    // Calcular direção normalizada para o jogador
+    Direction := PlayerPos.Subtract(APosition);
+    
+    // Normalizar a direção (fazer com que tenha magnitude 1)
+    Speed := 8.0; // Velocidade dos projéteis inimigos
+    if Direction.Distance(TVector3D.Create(0, 0, 0)) > 0.1 then
+    begin
+      FVelocity := TVector3D.Create(
+        (Direction.X / Direction.Distance(TVector3D.Create(0, 0, 0))) * Speed,
+        (Direction.Y / Direction.Distance(TVector3D.Create(0, 0, 0))) * Speed,
+        (Direction.Z / Direction.Distance(TVector3D.Create(0, 0, 0))) * Speed
+      );
+    end
+    else
+    begin
+      // Fallback se a direção for zero
+      FVelocity := TVector3D.Create(0, 0, Speed);
+    end;
   end;
 end;
 
@@ -408,6 +433,47 @@ procedure TStar.Update(DeltaTime: Single);
 begin
   // Estrelas ficam estáticas - não chamamos inherited Update
   // e não reposicionamos as estrelas
+end;
+
+{ TBulletWithTarget }
+
+constructor TBulletWithTarget.Create(APosition: TVector3D; AIsPlayerBullet: Boolean; ATargetPosition: TVector3D);
+var
+  Direction: TVector3D;
+  Speed: Single;
+  Distance: Single;
+begin
+  if AIsPlayerBullet then
+    inherited Create(APosition, 0.2, clYellow)
+  else
+    inherited Create(APosition, 0.2, clRed);
+    
+  FIsPlayerBullet := AIsPlayerBullet;
+  
+  if AIsPlayerBullet then
+    FVelocity := TVector3D.Create(0, 10, 0)  // Para cima (vertical)
+  else
+  begin
+    // Calcular direção normalizada para o alvo
+    Direction := ATargetPosition.Subtract(APosition);
+    Distance := Direction.Distance(TVector3D.Create(0, 0, 0));
+    
+    // Normalizar a direção e aplicar velocidade
+    Speed := 8.0; // Velocidade dos projéteis inimigos
+    if Distance > 0.1 then
+    begin
+      FVelocity := TVector3D.Create(
+        (Direction.X / Distance) * Speed,
+        (Direction.Y / Distance) * Speed,
+        (Direction.Z / Distance) * Speed
+      );
+    end
+    else
+    begin
+      // Fallback se a direção for zero
+      FVelocity := TVector3D.Create(0, 0, Speed);
+    end;
+  end;
 end;
 
 { TGameObjectList<T> }

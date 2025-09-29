@@ -72,17 +72,32 @@ end;
 procedure TAudioSystem.PlayTone(Frequency: Integer; Duration: Integer; Volume: Single);
 var
   AdjustedFreq: Integer;
+  AdjustedDuration: Integer;
+  FinalVolume: Single;
 begin
-  // Ajustar frequência baseado no volume
-  AdjustedFreq := Round(Frequency * (Volume * FMasterVolume));
+  // Calcular volume final sem distorção
+  FinalVolume := Volume * FMasterVolume;
+  if FinalVolume > 1.0 then FinalVolume := 1.0;
   
-  if AdjustedFreq > 37 then // Frequência mínima do Windows Beep
+  // Ajustar frequência de forma mais suave
+  AdjustedFreq := Round(Frequency);
+  
+  // Limitar duração para evitar sobreposição
+  AdjustedDuration := Min(Duration, 500);
+  
+  if (AdjustedFreq >= 37) and (AdjustedFreq <= 32767) then // Limites do Windows Beep
   begin
     // Usar thread para não bloquear a interface
     TThread.CreateAnonymousThread(
       procedure
       begin
-        PlayBeep(AdjustedFreq, Duration);
+        try
+          // Pequena pausa antes do som para evitar estalos
+          Sleep(10);
+          PlayBeep(AdjustedFreq, AdjustedDuration);
+        except
+          // Ignorar erros de áudio silenciosamente
+        end;
       end
     ).Start;
   end;
@@ -103,24 +118,91 @@ begin
     begin
       while FBackgroundMusicPlaying do
       begin
-        // Tom ambiente espacial - sequência de tons baixos
-        BaseFreq := 80;
-        
-        for i := 0 to 7 do
-        begin
-          if not FBackgroundMusicPlaying then Break;
+        try
+          // Tom ambiente espacial - sequência de tons baixos mais suaves
+          BaseFreq := 60; // Frequência mais baixa para ambiente
           
-          // Variação de frequência para criar ambiente
-          PlayBeep(BaseFreq + (i * 5), 500);
-          Sleep(600);
+          for i := 0 to 5 do // Menos repetições
+          begin
+            if not FBackgroundMusicPlaying then Break;
+            
+            // Variação de frequência mais suave
+            PlayBeep(BaseFreq + (i * 3), 400); // Duração menor
+            Sleep(800); // Pausa maior entre tons
+            
+            if not FBackgroundMusicPlaying then Break;
+            Sleep(600);
+          end;
           
-          if not FBackgroundMusicPlaying then Break;
-          PlayBeep(BaseFreq + (8 - i) * 3, 400);
-          Sleep(500);
+          // Pausa maior entre ciclos
+          Sleep(4000);
+        except
+          // Continuar mesmo com erros
         end;
-        
-        // Pausa entre ciclos
-        Sleep(2000);
+      end;
+    end
+  ).Start;
+end;
+
+procedure TAudioSystem.PlayPlayerShoot;
+begin
+  // Som de laser do jogador - mais suave e curto
+  TThread.CreateAnonymousThread(
+    procedure
+    begin
+      try
+        PlayTone(500, 150, FSfxVolume * 0.5); // Frequência e volume menores
+      except
+        // Ignorar erros
+      end;
+    end
+  ).Start;
+end;
+
+procedure TAudioSystem.PlayEnemyShoot;
+begin
+  // Som de laser inimigo - tom grave mais suave
+  TThread.CreateAnonymousThread(
+    procedure
+    begin
+      try
+        PlayTone(250, 180, FSfxVolume * 0.4); // Mais suave
+      except
+        // Ignorar erros
+      end;
+    end
+  ).Start;
+end;
+
+procedure TAudioSystem.PlayPlayerHit;
+begin
+  // Som de alarme quando jogador é atingido - simplificado
+  TThread.CreateAnonymousThread(
+    procedure
+    begin
+      try
+        PlayTone(600, 200, FSfxVolume * 0.6); // Som único mais suave
+        Sleep(150);
+        PlayTone(400, 150, FSfxVolume * 0.4); // Tom de follow-up mais baixo
+      except
+        // Ignorar erros
+      end;
+    end
+  ).Start;
+end;
+
+procedure TAudioSystem.PlayEnemyHit;
+begin
+  // Som de explosão quando inimigo é destruído - simplificado
+  TThread.CreateAnonymousThread(
+    procedure
+    begin
+      try
+        PlayTone(300, 200, FSfxVolume * 0.6); // Tom médio mais suave
+        Sleep(120);
+        PlayTone(150, 250, FSfxVolume * 0.4); // Tom grave final mais baixo
+      except
+        // Ignorar erros
       end;
     end
   ).Start;
@@ -129,54 +211,6 @@ end;
 procedure TAudioSystem.StopBackgroundMusic;
 begin
   FBackgroundMusicPlaying := False;
-end;
-
-procedure TAudioSystem.PlayPlayerShoot;
-begin
-  // Som de laser do jogador - tom único mais suave
-  TThread.CreateAnonymousThread(
-    procedure
-    begin
-      PlayTone(600, 200, FSfxVolume * 0.7); // Tom mais baixo e mais longo
-    end
-  ).Start;
-end;
-
-procedure TAudioSystem.PlayEnemyShoot;
-begin
-  // Som de laser inimigo - tom grave único
-  TThread.CreateAnonymousThread(
-    procedure
-    begin
-      PlayTone(300, 250, FSfxVolume * 0.6); // Tom grave mais longo
-    end
-  ).Start;
-end;
-
-procedure TAudioSystem.PlayPlayerHit;
-begin
-  // Som de alarme quando jogador é atingido - mais suave
-  TThread.CreateAnonymousThread(
-    procedure
-    begin
-      PlayTone(800, 300, FSfxVolume * 0.8); // Tom único mais longo
-      Sleep(100);
-      PlayTone(600, 200, FSfxVolume * 0.6); // Tom de follow-up
-    end
-  ).Start;
-end;
-
-procedure TAudioSystem.PlayEnemyHit;
-begin
-  // Som de explosão quando inimigo é destruído - mais suave
-  TThread.CreateAnonymousThread(
-    procedure
-    begin
-      PlayTone(400, 300, FSfxVolume * 0.8); // Tom médio
-      Sleep(100);
-      PlayTone(200, 400, FSfxVolume * 0.6); // Tom grave final
-    end
-  ).Start;
 end;
 
 procedure TAudioSystem.SetMasterVolume(Volume: Single);

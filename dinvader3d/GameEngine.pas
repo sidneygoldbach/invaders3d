@@ -276,7 +276,8 @@ begin
     if Enemy.CanShoot and (Random < 0.01) then // 1% de chance por frame
     begin
       Enemy.Shoot;
-      Bullet := TBullet.Create(Enemy.Position, False);
+      // Criar projétil inimigo com posição atual do jogador
+      Bullet := TBulletWithTarget.Create(Enemy.Position, False, FPlayer.Position);
       FEnemyBullets.Add(Bullet);
       
       if Assigned(FAudioSystem) then

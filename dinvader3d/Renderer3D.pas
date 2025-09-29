@@ -106,22 +106,26 @@ function TRenderer3D.ProjectPoint(const Point3D: TVector3D): TPoint;
 var
   X, Y, Z: Single;
   ScreenX, ScreenY: Integer;
+  PerspectiveFactor: Single;
 begin
   // Transformar ponto 3D para coordenadas da tela
   X := Point3D.X;
   Y := Point3D.Y;
   Z := Point3D.Z - FCameraZ;
   
-  if Z <= 0 then
+  if Z <= 0.1 then
   begin
-    // Ponto atrás da câmera
+    // Ponto muito próximo ou atrás da câmera
     Result := Point(-1000, -1000);
     Exit;
   end;
   
-  // Projeção perspectiva simples
-  ScreenX := Round((X / Z) * 300 + FWidth / 2);
-  ScreenY := Round((-Y / Z) * 300 + FHeight / 2);
+  // Fator de perspectiva mais suave
+  PerspectiveFactor := 400.0 / (Z + 5.0); // Adicionar offset para suavizar
+  
+  // Projeção perspectiva com transição mais suave
+  ScreenX := Round(X * PerspectiveFactor + FWidth / 2);
+  ScreenY := Round(-Y * PerspectiveFactor + FHeight / 2);
   
   Result := Point(ScreenX, ScreenY);
 end;
@@ -319,9 +323,9 @@ begin
   Center := ProjectPoint(Player.Position);
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
-  // Calcular escala baseada na distância Z
-  Scale := 1.5 + (Player.Position.Z / 8.0);
-  Scale := Max(1.0, Min(3.0, Scale)); // Limitar escala
+  // Calcular escala baseada na distância Z com transição mais suave
+  Scale := 1.0 + (Player.Position.Z + 15.0) / 20.0;
+  Scale := Max(0.5, Min(2.5, Scale)); // Limitar escala
   
   // Adicionar efeito de propulsão
   FEffectsManager.AddEngineFlame(Player.Position.X, Player.Position.Y + 15, Player.Position.Z,
@@ -339,16 +343,19 @@ begin
   Center := ProjectPoint(Bullet.Position);
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
-  // Calcular escala baseada na distância Z
-  Scale := 0.8 + (Bullet.Position.Z / 15.0);
-  Scale := Max(0.5, Min(1.5, Scale)); // Limitar escala para projéteis
+  // Calcular escala baseada na distância Z com transição mais suave
+  Scale := 0.5 + (Bullet.Position.Z + 15.0) / 25.0;
+  Scale := Max(0.3, Min(1.2, Scale)); // Limitar escala para projéteis
   
   // Adicionar rastro de energia
   FEffectsManager.AddLaserTrail(Bullet.Position.X, Bullet.Position.Y, Bullet.Position.Z,
                                Bullet.Velocity.X, Bullet.Velocity.Y, Bullet.Velocity.Z);
   
-  // Desenhar sprite 3D do laser energético
-  FSpriteManager.DrawSprite(stLaserBeam, Center.X, Center.Y, Scale, 0, 255);
+  // Escolher sprite baseado no tipo de projétil
+  if Bullet.IsPlayerBullet then
+    FSpriteManager.DrawSprite(stLaserBeam, Center.X, Center.Y, Scale, 0, 255)
+  else
+    FSpriteManager.DrawSprite(stLaserBeam, Center.X, Center.Y, Scale, 0, 200); // Projéteis inimigos mais transparentes
 end;
 
 procedure TRenderer3D.RenderEnemy(Enemy: TEnemy);
@@ -360,9 +367,9 @@ begin
   Center := ProjectPoint(Enemy.Position);
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
-  // Calcular escala baseada na distância Z
-  Scale := 1.2 + (Enemy.Position.Z / 12.0);
-  Scale := Max(0.8, Min(2.5, Scale)); // Limitar escala
+  // Calcular escala baseada na distância Z com transição mais suave
+  Scale := 1.0 + (Enemy.Position.Z + 15.0) / 18.0;
+  Scale := Max(0.6, Min(2.2, Scale)); // Limitar escala
   
   // Frame de animação baseado no tempo
   Frame := Round(GetTickCount / 100) mod 360;
@@ -387,12 +394,12 @@ begin
   Center := ProjectPoint(Airplane.Position);
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
-  // Calcular escala baseada na distância Z
-  Scale := 1.2 + (Airplane.Position.Z / 12.0);
-  Scale := Max(0.6, Min(2.0, Scale)); // Limitar escala
+  // Calcular escala baseada na distância Z com transição mais suave
+  Scale := 1.0 + (Airplane.Position.Z + 15.0) / 18.0;
+  Scale := Max(0.5, Min(2.0, Scale)); // Limitar escala
   
   // Rotação baseada na velocidade
-  Rotation := ArcTan2(Airplane.Velocity.Y, Airplane.Velocity.X) * 180 / Pi;
+  Rotation := 0;
   
   // Adicionar chamas dos motores
   FEffectsManager.AddEngineFlame(Airplane.Position.X - 20, Airplane.Position.Y, Airplane.Position.Z,
@@ -411,9 +418,9 @@ begin
   Center := ProjectPoint(Parachutist.Position);
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
-  // Calcular escala baseada na distância Z
-  Scale := 1.0 + (Parachutist.Position.Z / 15.0);
-  Scale := Max(0.6, Min(2.0, Scale)); // Limitar escala
+  // Calcular escala baseada na distância Z com transição mais suave
+  Scale := 0.8 + (Parachutist.Position.Z + 15.0) / 20.0;
+  Scale := Max(0.4, Min(1.8, Scale)); // Limitar escala
   
   // Frame de animação para movimento do paraquedas
   Frame := Round(GetTickCount / 150) mod 360;
@@ -432,35 +439,62 @@ var
   Frame: Integer;
   Alpha: Byte;
   Intensity: Single;
+  FlashEffect: Boolean;
 begin
   Center := ProjectPoint(Explosion.Position);
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
-  // Calcular escala baseada na idade da explosão
-  Scale := 0.5 + (Explosion.LifeTime / Explosion.MaxLifeTime) * 2.0;
-  Scale := Max(0.3, Min(3.0, Scale));
-  
-  // Frame de animação rápida para explosão
-  Frame := Round(GetTickCount / 50) mod 360;
-  
-  // Alpha baseado na idade (fade out)
-  Alpha := Round(255 * (1.0 - (Explosion.LifeTime / Explosion.MaxLifeTime)));
-  Alpha := Max(0, Min(255, Alpha));
-  
-  // Intensidade baseada na idade
+  // Calcular intensidade da explosão baseada no tempo de vida
   Intensity := 1.0 - (Explosion.LifeTime / Explosion.MaxLifeTime);
   
-  // Adicionar efeitos de partículas e ondas de choque
-  FEffectsManager.AddExplosion(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z, Intensity);
+  // Efeito de flash inicial para tornar a explosão mais visível
+  FlashEffect := Explosion.LifeTime < (Explosion.MaxLifeTime * 0.2); // Primeiros 20%
   
-  // Onda de choque no início da explosão
-  if Explosion.LifeTime < Explosion.MaxLifeTime * 0.3 then
-    FEffectsManager.AddShockwave(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z, Scale * 50);
-
-  // Desenhar múltiplas partículas de explosão
+  // Calcular escala da explosão (cresce rapidamente no início)
+  if FlashEffect then
+    Scale := 3.0 + Intensity * 2.0  // Explosão grande e brilhante no início
+  else
+    Scale := 2.0 + (1.0 - Intensity) * 1.5; // Diminui gradualmente
+  
+  // Calcular transparência
+  if FlashEffect then
+    Alpha := 255  // Totalmente opaco no flash inicial
+  else
+    Alpha := Round(Intensity * 200); // Fade out gradual
+  
+  // Frame de animação para efeito dinâmico
+  Frame := Round((1.0 - Intensity) * 360);
+  
+  // Adicionar múltiplos efeitos visuais para maior impacto
+  if FlashEffect then
+  begin
+    // Onda de choque inicial
+    FEffectsManager.AddShockwave(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z, 
+                                Scale * 50.0);
+    
+    // Campo de energia para efeito de flash
+    FEffectsManager.AddEnergyField(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z);
+  end;
+  
+  // Adicionar explosão principal com intensidade alta
+  FEffectsManager.AddExplosion(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z, 
+                              Intensity * 2.0);
+  
+  // Adicionar brilho ao redor da explosão
+  FEffectsManager.AddGlow(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z, 
+                         RGB(255, 128, 0), Intensity);
+  
+  // Desenhar múltiplos sprites da explosão para maior impacto visual
   FSpriteManager.DrawAnimatedSprite(stExplosionParticle, Center.X, Center.Y, Frame, Scale, 0, Alpha);
-  FSpriteManager.DrawAnimatedSprite(stExplosionParticle, Center.X - 10, Center.Y - 10, Frame + 90, Scale * 0.8, 45, Alpha);
-  FSpriteManager.DrawAnimatedSprite(stExplosionParticle, Center.X + 10, Center.Y + 10, Frame + 180, Scale * 0.6, 90, Alpha);
+  
+  // Adicionar sprites secundários para efeito mais dramático
+  if FlashEffect then
+  begin
+    FSpriteManager.DrawAnimatedSprite(stExplosionParticle, Center.X - 15, Center.Y - 15, 
+                                     Frame + 90, Scale * 0.8, 45, Alpha);
+    FSpriteManager.DrawAnimatedSprite(stExplosionParticle, Center.X + 15, Center.Y + 15, 
+                                     Frame + 180, Scale * 0.6, 90, Alpha);
+  end;
 end;
 
 procedure TRenderer3D.RenderStars(Stars: TGameObjectList<TStar>);
