@@ -133,73 +133,48 @@ end;
 
 procedure TAudioSystem.PlayPlayerShoot;
 begin
-  // Som de laser do jogador - frequência alta descendo
+  // Som de laser do jogador - tom único mais suave
   TThread.CreateAnonymousThread(
     procedure
     begin
-      PlayTone(800, 100, FSfxVolume);
-      Sleep(50);
-      PlayTone(600, 80, FSfxVolume);
-      Sleep(30);
-      PlayTone(400, 60, FSfxVolume);
+      PlayTone(600, 200, FSfxVolume * 0.7); // Tom mais baixo e mais longo
     end
   ).Start;
 end;
 
 procedure TAudioSystem.PlayEnemyShoot;
 begin
-  // Som de laser inimigo - frequência baixa
+  // Som de laser inimigo - tom grave único
   TThread.CreateAnonymousThread(
     procedure
     begin
-      PlayTone(200, 150, FSfxVolume);
-      Sleep(50);
-      PlayTone(150, 100, FSfxVolume);
-      Sleep(30);
-      PlayTone(100, 80, FSfxVolume);
+      PlayTone(300, 250, FSfxVolume * 0.6); // Tom grave mais longo
     end
   ).Start;
 end;
 
 procedure TAudioSystem.PlayPlayerHit;
 begin
-  // Som de alarme quando jogador é atingido
+  // Som de alarme quando jogador é atingido - mais suave
   TThread.CreateAnonymousThread(
     procedure
-    var
-      i: Integer;
     begin
-      for i := 0 to 2 do
-      begin
-        PlayTone(1000, 100, FSfxVolume);
-        Sleep(80);
-        PlayTone(800, 100, FSfxVolume);
-        Sleep(80);
-      end;
+      PlayTone(800, 300, FSfxVolume * 0.8); // Tom único mais longo
+      Sleep(100);
+      PlayTone(600, 200, FSfxVolume * 0.6); // Tom de follow-up
     end
   ).Start;
 end;
 
 procedure TAudioSystem.PlayEnemyHit;
 begin
-  // Som de explosão quando inimigo é destruído
+  // Som de explosão quando inimigo é destruído - mais suave
   TThread.CreateAnonymousThread(
     procedure
-    var
-      i: Integer;
-      Freq: Integer;
     begin
-      // Sequência de explosão com frequências decrescentes
-      for i := 0 to 5 do
-      begin
-        Freq := 500 - (i * 50);
-        if Freq > 37 then
-          PlayTone(Freq, 80, FSfxVolume);
-        Sleep(40);
-      end;
-      
-      // Som final grave
-      PlayTone(100, 200, FSfxVolume);
+      PlayTone(400, 300, FSfxVolume * 0.8); // Tom médio
+      Sleep(100);
+      PlayTone(200, 400, FSfxVolume * 0.6); // Tom grave final
     end
   ).Start;
 end;

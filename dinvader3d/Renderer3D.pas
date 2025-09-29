@@ -437,26 +437,26 @@ begin
   if (Center.X < -500) or (Center.Y < -500) then Exit;
   
   // Calcular escala baseada na idade da explosão
-    Scale := 0.5 + (Explosion.LifeTime / Explosion.MaxLifeTime) * 2.0;
-    Scale := Max(0.3, Min(3.0, Scale));
-    
-    // Frame de animação rápida para explosão
-    Frame := Round(GetTickCount / 50) mod 360;
-    
-    // Alpha baseado na idade (fade out)
-    Alpha := Round(255 * (1.0 - (Explosion.LifeTime / Explosion.MaxLifeTime)));
-    Alpha := Max(0, Min(255, Alpha));
-    
-    // Intensidade baseada na idade
-    Intensity := 1.0 - (Explosion.LifeTime / Explosion.MaxLifeTime);
-    
-    // Adicionar efeitos de partículas e ondas de choque
-    FEffectsManager.AddExplosion(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z, Intensity);
-    
-    // Onda de choque no início da explosão
-    if Explosion.LifeTime < Explosion.MaxLifeTime * 0.3 then
-      FEffectsManager.AddShockwave(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z, Scale * 50);
+  Scale := 0.5 + (Explosion.LifeTime / Explosion.MaxLifeTime) * 2.0;
+  Scale := Max(0.3, Min(3.0, Scale));
   
+  // Frame de animação rápida para explosão
+  Frame := Round(GetTickCount / 50) mod 360;
+  
+  // Alpha baseado na idade (fade out)
+  Alpha := Round(255 * (1.0 - (Explosion.LifeTime / Explosion.MaxLifeTime)));
+  Alpha := Max(0, Min(255, Alpha));
+  
+  // Intensidade baseada na idade
+  Intensity := 1.0 - (Explosion.LifeTime / Explosion.MaxLifeTime);
+  
+  // Adicionar efeitos de partículas e ondas de choque
+  FEffectsManager.AddExplosion(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z, Intensity);
+  
+  // Onda de choque no início da explosão
+  if Explosion.LifeTime < Explosion.MaxLifeTime * 0.3 then
+    FEffectsManager.AddShockwave(Explosion.Position.X, Explosion.Position.Y, Explosion.Position.Z, Scale * 50);
+
   // Desenhar múltiplas partículas de explosão
   FSpriteManager.DrawAnimatedSprite(stExplosionParticle, Center.X, Center.Y, Frame, Scale, 0, Alpha);
   FSpriteManager.DrawAnimatedSprite(stExplosionParticle, Center.X - 10, Center.Y - 10, Frame + 90, Scale * 0.8, 45, Alpha);
