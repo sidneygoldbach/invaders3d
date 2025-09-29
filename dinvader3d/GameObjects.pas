@@ -456,7 +456,7 @@ begin
   begin
     // Calcular direção normalizada para o alvo
     Direction := ATargetPosition.Subtract(APosition);
-    Distance := Direction.Distance(TVector3D.Create(0, 0, 0));
+    Distance := Sqrt(Sqr(Direction.X) + Sqr(Direction.Y) + Sqr(Direction.Z));
     
     // Normalizar a direção e aplicar velocidade
     Speed := 8.0; // Velocidade dos projéteis inimigos
