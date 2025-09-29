@@ -475,15 +475,25 @@ begin
                    X + ScaledWidth div 2, Y + ScaledHeight div 2);
   SrcRect := Rect(0, 0, Bitmap.Width, Bitmap.Height);
   
+  // Configurar transparência - preto (RGB(0,0,0)) será transparente
+  Bitmap.Transparent := True;
+  Bitmap.TransparentColor := clBlack;
+  Bitmap.TransparentMode := tmFixed;
+  
   // Aplicar transparência se necessário
   if Alpha < 255 then
   begin
-    // Implementar blend de alpha (simplificado)
+    // Para alpha blending, usar modo de cópia com transparência
+    FCanvas.CopyMode := cmSrcCopy;
+  end
+  else
+  begin
+    // Modo normal com transparência
     FCanvas.CopyMode := cmSrcCopy;
   end;
   
-  // Desenhar sprite (rotação seria implementada com transformações mais complexas)
-  FCanvas.CopyRect(DestRect, Bitmap.Canvas, SrcRect);
+  // Desenhar sprite com transparência
+  FCanvas.StretchDraw(DestRect, Bitmap);
 end;
 
 procedure TSpriteManager.DrawAnimatedSprite(SpriteType: TSpriteType; X, Y: Integer; 

@@ -300,12 +300,16 @@ var
   Enemy: TEnemy;
   Airplane: TAirplane;
   Explosion: TExplosion;
+  BulletHit: Boolean;
 begin
-  // Colisões: Projéteis do jogador vs Inimigos
+  // Colisões: Projéteis do jogador vs Inimigos e Aviões
   for i := FBullets.Count - 1 downto 0 do
   begin
+    if i >= FBullets.Count then Continue;
     Bullet := FBullets[i];
+    BulletHit := False;
     
+    // Verificar colisão com inimigos UFO
     for j := FEnemies.Count - 1 downto 0 do
     begin
       Enemy := FEnemies[j];
@@ -328,19 +332,18 @@ begin
         // Remover objetos
         FBullets.Delete(i);
         FEnemies.Delete(j);
+        BulletHit := True;
         Break;
       end;
     end;
-  end;
-  
-  // Colisões: Projéteis do jogador vs Aviões
-  for i := FBullets.Count - 1 downto 0 do
-  begin
-    if i >= FBullets.Count then Continue;
-    Bullet := FBullets[i];
     
+    // Se a bala já foi removida, pular para a próxima
+    if BulletHit then Continue;
+    
+    // Verificar colisão com aviões
     for j := FAirplanes.Count - 1 downto 0 do
     begin
+      if i >= FBullets.Count then Break; // Verificar se a bala ainda existe
       Airplane := FAirplanes[j];
       
       if Bullet.CheckCollision(Airplane) then
