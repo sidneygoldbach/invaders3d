@@ -29,7 +29,7 @@ type
     procedure CreateGradientBitmap(Bitmap: TBitmap; const Colors: array of TColor; 
       CenterX, CenterY, Radius: Integer);
     procedure Draw3DSphere(Bitmap: TBitmap; X, Y, Radius: Integer; 
-      const Colors: array of TColor);
+      const Colors: array of TColor; ClearBackground: Boolean = True);
     procedure DrawGlowEffect(Bitmap: TBitmap; X, Y, Radius: Integer; 
       Color: TColor; Intensity: Single);
     
