@@ -3,7 +3,7 @@ unit AudioSystem;
 interface
 
 uses
-  System.Classes, System.SysUtils, Winapi.Windows, Winapi.MMSystem;
+  System.Classes, System.SysUtils, System.Math, Winapi.Windows, Winapi.MMSystem;
 
 type
   TAudioSystem = class
